@@ -1,12 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import useAuthStore from "../store/authStore";
 
 const Signup = () => {
-  const [form, setForm] = useState({ email: "", phone: "", password: "" });
+  const [form, setForm] = useState({ email: "", phone: "", password: "", role: "customer" });
   const { signupUser } = useAuthStore();
   const navigate = useNavigate();
-  const blurDiv = useRef(null); // Dummy element to capture initial focus
+  const blurDiv = useRef(null);
 
   useEffect(() => {
     if (blurDiv.current) {
@@ -17,14 +17,21 @@ const Signup = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
 
-    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-    await signupUser(form.email, form.phone, form.password);
+    const { success, message } = await signupUser(
+      form.email,
+      form.phone,
+      form.password,
+      form.role
+    );
 
-    alert(`Verification code sent to ${form.email}: ${verificationCode}`);
-
-    navigate(`/verify?email=${encodeURIComponent(form.email)}`, {
-      state: { generatedCode: verificationCode },
-    });
+    if (success) {
+      
+      navigate(`/verify`, {
+        state: { email: form.email }, // pass email only, no code
+      });
+    } else {
+      alert(message || "Signup failed");
+    }
   };
 
   return (
@@ -40,7 +47,10 @@ const Signup = () => {
         <div className="bg-white flex w-full max-w-5xl overflow-hidden">
 
           {/* Image Section */}
-          <div className="hidden md:block w-1/2 pointer-events-none select-none" tabIndex={-1}>
+          <div
+            className="hidden md:block w-1/2 pointer-events-none select-none"
+            tabIndex={-1}
+          >
             <img
               src="/pngtree-food-delivery-by-scooters-free-download-png-image_16940462.png"
               alt="Food delivery"
@@ -122,6 +132,7 @@ const Signup = () => {
               <button
                 type="button"
                 className="w-full border border-gray-300 flex items-center justify-center gap-2 py-2 rounded-xl hover:bg-gray-100 transition"
+                onClick={() => alert("Google Sign-In coming soon!")}
               >
                 <img src="/google-icon.png" alt="Google" className="w-5 h-5" />
                 Continue with Google
