@@ -169,3 +169,61 @@
 {"level":"info","message":"Status: +251937881256-555117","timestamp":"2025-08-01T21:09:14.935Z"}
 {"level":"info","message":"Redis set results: OK","timestamp":"2025-08-01T21:09:15.128Z"}
 {"level":"info","message":"OTP verified for +251937881256","timestamp":"2025-08-01T21:09:27.133Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-02T10:41:30.443Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-02T10:41:30.810Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-02T10:41:34.568Z"}
+{"level":"info","message":"Status: +251937881256-798758","timestamp":"2025-08-02T10:41:38.094Z"}
+{"level":"info","message":"Redis set results: OK","timestamp":"2025-08-02T10:41:38.398Z"}
+{"level":"info","message":"OTP verified for +251937881256","timestamp":"2025-08-02T10:41:45.874Z"}
+{"level":"error","message":"Cannot destructure property 'email' of 'req.body' as it is undefined.","timestamp":"2025-08-02T10:43:03.135Z"}
+{"level":"error","message":"Cannot destructure property 'email' of 'req.body' as it is undefined.","timestamp":"2025-08-02T10:43:41.026Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-02T10:43:59.434Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-02T10:43:59.810Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-02T10:44:01.135Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-02T10:44:01.442Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-02T10:44:02.781Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-02T10:44:03.101Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-02T10:44:04.331Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-02T10:44:04.639Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-02T10:44:07.186Z"}
+{"level":"error","message":"Cannot destructure property 'email' of 'req.body' as it is undefined.","timestamp":"2025-08-02T10:44:08.667Z"}
+{"level":"info","message":"Status: +251937881256-567240","timestamp":"2025-08-02T10:44:51.839Z"}
+{"level":"error","message":"Cannot destructure property 'phone' of 'req.body' as it is undefined.","timestamp":"2025-08-02T10:46:42.147Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-02T10:48:19.220Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-02T10:48:19.598Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-02T10:48:22.572Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-02T10:49:06.568Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-02T10:49:06.883Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-02T10:49:09.470Z"}
+{"level":"error","message":"Cannot set headers after they are sent to the client","timestamp":"2025-08-02T10:49:17.983Z"}
+{"level":"error","message":"err.message","timestamp":"2025-08-02T10:49:17.986Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-02T10:50:31.059Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-02T10:50:31.388Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-02T10:50:34.463Z"}
+{"level":"info","message":"Status: +251937881256-822895","timestamp":"2025-08-02T10:52:04.164Z"}
+{"level":"info","message":"Redis set results: OK","timestamp":"2025-08-02T10:52:04.468Z"}
+{"level":"info","message":"OTP verified for +251937881256","timestamp":"2025-08-02T10:52:15.975Z"}
+{"level":"info","message":"Status: +251937881256-771117","timestamp":"2025-08-02T10:53:51.580Z"}
+{"level":"info","message":"Redis set results: OK","timestamp":"2025-08-02T10:53:51.884Z"}
+{"level":"info","message":"OTP verified for +251937881256","timestamp":"2025-08-02T10:55:09.095Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-02T10:55:35.319Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-02T10:55:35.718Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-02T10:55:38.897Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-02T10:55:40.188Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-02T10:55:40.524Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-02T10:55:43.142Z"}
+{"level":"info","message":"OTP verified for +251937881256","timestamp":"2025-08-02T10:55:44.834Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-02T10:56:14.961Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-02T10:56:15.304Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-02T10:56:17.809Z"}
+{"level":"info","message":"OTP verified for +251937881256","timestamp":"2025-08-02T10:56:19.237Z"}
+{"level":"info","message":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4OGRlZTNmOWZmMjBkMTgzYjA4N2M5OCIsImlhdCI6MTc1NDEzMjE3OSwiZXhwIjoxNzU0NzM2OTc5fQ.RZOY46q9vCVvZx4oZmFx1tkCIUamY4booXBAKkIyEa8","timestamp":"2025-08-02T10:56:19.469Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-02T10:56:31.471Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-02T10:56:31.798Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-02T10:56:34.399Z"}
+{"level":"info","message":"OTP verified for +251937881256","timestamp":"2025-08-02T10:56:35.931Z"}
+{"level":"info","message":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4OGRlZTNmOWZmMjBkMTgzYjA4N2M5OCIsImlhdCI6MTc1NDEzMjE5NiwiZXhwIjoxNzU0NzM2OTk2fQ.IzjWmEN3IuK6-kZm3DpxrJpdXdl-BFd9Rigx2MQNnHg","timestamp":"2025-08-02T10:56:36.172Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-02T10:56:55.910Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-02T10:56:56.255Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-02T10:56:58.664Z"}
+{"level":"info","message":"Status: +251937881256-922331","timestamp":"2025-08-02T10:57:31.635Z"}

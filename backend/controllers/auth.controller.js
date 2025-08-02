@@ -71,7 +71,8 @@ exports.verifyOTP = async (req, res) => {
 
     const token = generateToken(user);
     const refreshTokenn = refreshToken(user);
-    await User.updateOne({ _id: user._id }, { refreshToken });
+    logger.info(refreshTokenn);
+    await User.updateOne({ _id: user._id }, { refreshToken: refreshTokenn });
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -113,7 +114,7 @@ exports.login = async (req, res) => {
     const token = generateToken(user);
     const refreshTokenn = refreshToken(user);
 
-    await User.updateOne({ id: user._id }, { refreshToken });
+    await User.updateOne({ id: user._id }, { refreshToken: refreshTokenn });
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -151,5 +152,60 @@ exports.refreshToken = async (req, res) => {
   } catch (err) {
     logger.error(err.message);
     res.status(500).json({ message: "Invalid refresh token" });
+  }
+};
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email, phone } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res
+        .status(401)
+        .json({ message: "User with given email doesn't exist" });
+    }
+
+    const { verificationCode, code } = await sendOTP(phone);
+    const otpExpiration = new Date(Date.now() + 10 * 10 * 1000);
+
+    user.resetPasswordToken = code;
+    user.resetPasswordExpires = otpExpiration;
+
+    await user.save();
+    res.status(200).json({
+      status: "success",
+      message: "OTP sent to your phone",
+    });
+  } catch (err) {
+    logger.error(err.message);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const { phone, code, newPassword } = req.body;
+    const user = await User.findOne({
+      phone,
+      resetPasswordToken: code,
+      // resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+
+    user.password = newPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    res.status(200).json({
+      status: "success",
+      message: "Password reset successfully",
+    });
+  } catch (err) {
+    logger.error(err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };

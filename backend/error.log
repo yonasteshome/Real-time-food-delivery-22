@@ -3,3 +3,9 @@
 {"level":"error","message":"Cannot access 'refreshToken' before initialization","timestamp":"2025-08-01T20:36:55.280Z"}
 {"level":"error","message":"Cannot access 'refreshToken' before initialization","timestamp":"2025-08-01T20:45:38.798Z"}
 {"level":"error","message":"Cannot read properties of null (reading 'role')","timestamp":"2025-08-01T20:57:27.520Z"}
+{"level":"error","message":"Cannot destructure property 'email' of 'req.body' as it is undefined.","timestamp":"2025-08-02T10:43:03.135Z"}
+{"level":"error","message":"Cannot destructure property 'email' of 'req.body' as it is undefined.","timestamp":"2025-08-02T10:43:41.026Z"}
+{"level":"error","message":"Cannot destructure property 'email' of 'req.body' as it is undefined.","timestamp":"2025-08-02T10:44:08.667Z"}
+{"level":"error","message":"Cannot destructure property 'phone' of 'req.body' as it is undefined.","timestamp":"2025-08-02T10:46:42.147Z"}
+{"level":"error","message":"Cannot set headers after they are sent to the client","timestamp":"2025-08-02T10:49:17.983Z"}
+{"level":"error","message":"err.message","timestamp":"2025-08-02T10:49:17.986Z"}

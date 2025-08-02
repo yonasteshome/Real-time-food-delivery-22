@@ -25,6 +25,8 @@ const userSchema = new mongoose.Schema({
       return this.role === "driver";
     },
   },
+  resetPasswordToken: { type: String },
+  resetPasswordExpires: { type: Date },
   googleId: { type: String },
   isVerified: { type: Boolean, default: false },
   deleted: { type: Boolean, default: false },

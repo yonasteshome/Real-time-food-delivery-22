@@ -42,6 +42,21 @@ exports.loginSchema = Joi.object({
 exports.otpSchema = Joi.object({
   phone: Joi.string()
     .pattern(/^\+?\d{10,13}$/)
-    .optional(),
+    .required(),
   otp: Joi.string().length(6).required(),
+});
+
+exports.forgotPasswordSchema = Joi.object({
+  email: Joi.string().email().required(),
+  phone: Joi.string()
+    .pattern(/^\+?\d{10,13}$/)
+    .required(),
+});
+
+exports.resetPasswordSchema = Joi.object({
+  phone: Joi.string()
+    .pattern(/^\+?\d{10,13}$/)
+    .required(),
+  code: Joi.string().length(6).required(),
+  newPassword: Joi.string().min(8).required(),
 });
