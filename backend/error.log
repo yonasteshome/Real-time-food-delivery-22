@@ -1,0 +1,5 @@
+{"level":"error","message":"Cannot read properties of undefined (reading 'refreshToken')","timestamp":"2025-08-01T20:08:51.811Z"}
+{"level":"error","message":"Cannot access 'refreshToken' before initialization","timestamp":"2025-08-01T20:33:22.885Z"}
+{"level":"error","message":"Cannot access 'refreshToken' before initialization","timestamp":"2025-08-01T20:36:55.280Z"}
+{"level":"error","message":"Cannot access 'refreshToken' before initialization","timestamp":"2025-08-01T20:45:38.798Z"}
+{"level":"error","message":"Cannot read properties of null (reading 'role')","timestamp":"2025-08-01T20:57:27.520Z"}
