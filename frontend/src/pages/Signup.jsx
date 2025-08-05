@@ -7,36 +7,36 @@ const Signup = () => {
   const { signupUser } = useAuthStore();
   const navigate = useNavigate();
   const blurDiv = useRef(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    if (blurDiv.current) {
-      blurDiv.current.focus();
-    }
+    if (blurDiv.current) blurDiv.current.focus();
   }, []);
 
   const handleSignup = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
+    setError("");
     const { success, message } = await signupUser(
       form.email,
       form.phone,
       form.password,
       form.role
     );
+    setLoading(false);
 
     if (success) {
-      
-      navigate(`/verify`, {
-        state: { email: form.email }, // pass email only, no code
-      });
+      navigate("/verify"); // No need to pass state here
     } else {
-      alert(message || "Signup failed");
+      setError(message || "Signup failed");
     }
   };
 
+  const isFormValid = form.email && form.phone && form.password;
+
   return (
     <>
-      {/* Dummy hidden focus element */}
       <div
         ref={blurDiv}
         tabIndex={-1}
@@ -46,7 +46,6 @@ const Signup = () => {
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="bg-white flex w-full max-w-5xl overflow-hidden">
 
-          {/* Image Section */}
           <div
             className="hidden md:block w-1/2 pointer-events-none select-none"
             tabIndex={-1}
@@ -59,7 +58,6 @@ const Signup = () => {
             />
           </div>
 
-          {/* Form Section */}
           <div className="w-full md:w-1/2 p-10">
             <h1 className="text-3xl font-bold mb-2 text-gray-800">Welcome!</h1>
             <p className="text-sm text-gray-500 mb-6">Register here using the form below</p>
@@ -90,7 +88,10 @@ const Signup = () => {
                     name="phone"
                     placeholder="Enter your phone number"
                     value={form.phone}
-                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, '');
+                      setForm({ ...form, phone: val });
+                    }}
                     className="w-full pl-10 pr-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#E23E3E]"
                     required
                   />
@@ -122,10 +123,13 @@ const Signup = () => {
 
               <button
                 type="submit"
-                className="w-full bg-[#E23E3E] text-white py-2 rounded-xl font-semibold hover:bg-red-400 transition"
+                disabled={!isFormValid || loading}
+                className="w-full bg-[#E23E3E] text-white py-2 rounded-xl font-semibold hover:bg-red-400 transition disabled:opacity-60"
               >
-                Sign up
+                {loading ? "Signing up..." : "Sign up"}
               </button>
+
+              {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
 
               <div className="text-center text-gray-400 my-3">or signup with</div>
 

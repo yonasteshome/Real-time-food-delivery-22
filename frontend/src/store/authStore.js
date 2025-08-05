@@ -6,10 +6,11 @@ const useAuthStore = create((set) => ({
   isLoggedIn: false,
   user: null,
   token: null,
+  pendingUser: null, // ✅ add this
 
   login: async (email, password) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const response = await axios.post('http://localhost:5000/api/delivery/auth/login', { email, password });
       const { user, token } = response.data;
       set({ isLoggedIn: true, user, token });
       return { success: true };
@@ -23,7 +24,7 @@ const useAuthStore = create((set) => ({
 
   signupUser: async (email, phone, password, role) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/register', {
+      const response = await axios.post('http://localhost:5000/api/delivery/auth/register', {
         email,
         phone,
         password,
@@ -32,10 +33,9 @@ const useAuthStore = create((set) => ({
 
       const { id, token } = response.data;
 
+      // ✅ Save data for verification
       set({
-        isLoggedIn: true,
-        user: { id, email, phone, role },
-        token,
+        pendingUser: { id, email, phone, role },
       });
 
       return { success: true };
@@ -48,7 +48,7 @@ const useAuthStore = create((set) => ({
   },
 
   logout: () => {
-    set({ isLoggedIn: false, user: null, token: null });
+    set({ isLoggedIn: false, user: null, token: null, pendingUser: null });
   },
 }));
 
