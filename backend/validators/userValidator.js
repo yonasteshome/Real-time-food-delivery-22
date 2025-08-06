@@ -17,7 +17,6 @@ exports.registerUserSchema = Joi.object({
     "any.required": "Password is required",
   }),
   role: Joi.valid("customer", "restaurant", "driver", "admin")
-    .required()
     .messages({
       "any.only": "Invalid role",
       "any.required": "Role is required",

@@ -227,3 +227,53 @@
 {"level":"info","message":"Redis connected successfully","timestamp":"2025-08-02T10:56:56.255Z"}
 {"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-02T10:56:58.664Z"}
 {"level":"info","message":"Status: +251937881256-922331","timestamp":"2025-08-02T10:57:31.635Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-05T16:38:37.580Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-05T16:38:37.591Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-05T16:39:04.476Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-05T16:40:21.397Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-05T16:40:21.560Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-05T16:40:37.719Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-05T16:41:03.064Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-05T16:41:03.096Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-05T16:41:05.981Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-05T16:46:01.680Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-05T16:46:01.701Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-05T16:46:04.653Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-05T16:59:22.690Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-05T16:59:22.840Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-05T16:59:40.889Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-05T16:59:40.902Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-05T16:59:44.142Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-05T17:00:13.059Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-05T17:00:13.132Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-05T17:00:16.019Z"}
+{"level":"info","message":"Status: 0909090911-208045","timestamp":"2025-08-05T17:00:35.621Z"}
+{"level":"info","message":"Redis set results: OK","timestamp":"2025-08-05T17:00:35.639Z"}
+{"level":"info","message":"Status: 0909090911-200348","timestamp":"2025-08-05T17:01:46.416Z"}
+{"level":"info","message":"OTP verified for 0909090911","timestamp":"2025-08-05T17:04:35.456Z"}
+{"level":"error","message":"secretOrPrivateKey must have a value","timestamp":"2025-08-05T17:04:35.882Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-06T10:01:37.178Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-06T10:01:37.243Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-06T10:01:56.401Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-06T10:01:56.424Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-06T10:01:59.210Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-06T10:02:30.141Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-06T10:02:30.196Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-06T10:02:33.207Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-06T10:03:44.407Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-06T10:03:44.466Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-06T10:03:47.282Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-06T10:05:32.369Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-06T10:05:32.399Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-06T10:05:35.302Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-06T10:05:46.421Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-06T10:05:46.462Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-06T10:05:49.697Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-06T10:06:32.013Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-06T10:06:32.059Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-06T10:06:53.921Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-06T10:07:01.943Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-06T10:07:01.965Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-08-06T10:07:10.112Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-08-06T10:07:10.145Z"}
+{"level":"info","message":"MongoDB Atlas connected successfully!","timestamp":"2025-08-06T10:07:13.280Z"}

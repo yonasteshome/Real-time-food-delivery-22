@@ -9,3 +9,4 @@
 {"level":"error","message":"Cannot destructure property 'phone' of 'req.body' as it is undefined.","timestamp":"2025-08-02T10:46:42.147Z"}
 {"level":"error","message":"Cannot set headers after they are sent to the client","timestamp":"2025-08-02T10:49:17.983Z"}
 {"level":"error","message":"err.message","timestamp":"2025-08-02T10:49:17.986Z"}
+{"level":"error","message":"secretOrPrivateKey must have a value","timestamp":"2025-08-05T17:04:35.882Z"}
