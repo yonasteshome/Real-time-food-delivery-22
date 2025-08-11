@@ -1,11 +1,13 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Login } from './pages/Login';
-import Signup from './pages/Signup';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
-import { Landing_Page } from './pages/Landing Page';
-import VerificationCode from './components/VerificationCode';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Login } from "./pages/Login";
+import Signup from "./pages/Signup";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import { Landing_Page } from "./pages/Landing Page";
+import VerificationCode from "./components/VerificationCode";
+import OrderHistory from "./pages/OrderHistory";
+import FeedbackPage from "./pages/FeedBack";
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
         <Route path="/verify" element={<VerificationCode />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/order-history" element={<OrderHistory />} />
+        <Route path="/feedback" element={<FeedbackPage />} />
       </Routes>
     </Router>
   );
