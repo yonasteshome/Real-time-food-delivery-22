@@ -8,6 +8,10 @@ import { Landing_Page } from "./pages/Landing Page";
 import VerificationCode from "./components/VerificationCode";
 import OrderHistory from "./pages/OrderHistory";
 import FeedbackPage from "./pages/FeedBack";
+import NearbyRestaurants from './pages/NearbyRestaurants';
+import Sidebar from './components/Sidebar';
+import MenuPage from './pages/MenuPage';
+import CartPage from './pages/CartPage';
 
 function App() {
   return (
@@ -21,6 +25,11 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/order-history" element={<OrderHistory />} />
         <Route path="/feedback" element={<FeedbackPage />} />
+        <Route path="/nearby" element={<NearbyRestaurants />} />
+        <Route path="/sidebar" element={<Sidebar />} />
+        <Route path="/menu/:restaurantId" element={<MenuPage />} />
+        <Route path="/cart" element={<CartPage />} />
+
       </Routes>
     </Router>
   );

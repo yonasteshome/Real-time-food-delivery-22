@@ -15,7 +15,7 @@ const Sidebar = () => {
   const navItems = [
     { label: "Home", icon: FiHome, path: "/" },
     { label: "Explore", icon: FiMap, path: "/nearby" },
-    { label: "Orders", icon: FiShoppingBag, path: "/orders" },
+    { label: "Orders", icon: FiShoppingBag, path: "/order-history" },
     { label: "Promos", icon: FiTag, path: "/promos" },
     { label: "Setting", icon: FiSettings, path: "/settings" },
   ];
