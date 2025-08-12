@@ -25,7 +25,7 @@ export const Login = () => {
     e.preventDefault();
     const result = await login(form.email, form.password);
     if (result.success) {
-      navigate("/");
+      navigate("/nearby");
     } else {
       setError(result.message || "Login failed");
     }
