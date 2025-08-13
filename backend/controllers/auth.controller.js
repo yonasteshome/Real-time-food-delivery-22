@@ -129,8 +129,9 @@ exports.login = async (req, res) => {
       status: "success",
       data: { userId: user._id, role: user.role },
     });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    logger.error(err.message);
+    res.status(500).json({ message: err.message });
   }
 };
 
