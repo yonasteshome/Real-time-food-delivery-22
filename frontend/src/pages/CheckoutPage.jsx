@@ -1,18 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import useStore from "../store/useStore";
+import useCartStore from "../store/cartStore";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
 
-  const {
-    cartItems,
-    address,
-    paymentMethod,
-    setAddress,
-    setPaymentMethod,
-    clearCart,
-  } = useStore();
+  const { cartItems, clearCart } = useCartStore();
+
+  const [address, setAddress] = React.useState("");
+  const [paymentMethod, setPaymentMethod] = React.useState("cod");
 
   const total = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -110,7 +106,7 @@ const CheckoutPage = () => {
           <ul className="space-y-2">
             {cartItems.map((item) => (
               <li
-                key={item.id}
+                key={item._id}
                 className="flex justify-between items-center bg-black/5 backdrop-blur-sm border border-black/10 rounded-xl px-4 py-2 hover:bg-[#FFD700]/10 transition-colors"
               >
                 <span className="text-black/80">

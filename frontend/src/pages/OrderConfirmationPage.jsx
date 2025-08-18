@@ -1,15 +1,15 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import useStore from "../store/useStore";
+import useCartStore from "../store/cartStore";
 
 const currency = (n) => (typeof n === "number" ? n.toFixed(2) : n);
 
 const OrderConfirmationPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { feedback, setFeedback } = useStore();
+  const { cartItems, clearCart } = useCartStore();
 
-  const { cartItems, total, address, paymentMethod } = location.state || {};
+  const { total, address, paymentMethod } = location.state || {};
 
   const handleFeedback = () => {
     navigate("/feedback");
@@ -19,7 +19,7 @@ const OrderConfirmationPage = () => {
     navigate("/ordertracking");
   };
 
-  if (!cartItems)
+  if (!cartItems || cartItems.length === 0)
     return (
       <p className="text-center text-lg text-black/70 mt-10">No order found.</p>
     );
@@ -58,7 +58,7 @@ const OrderConfirmationPage = () => {
             <ul className="space-y-2">
               {cartItems.map((item) => (
                 <li
-                  key={item.id}
+                  key={item._id}
                   className="flex justify-between items-center border-b border-black/10 pb-2 text-black"
                 >
                   <span className="text-black/80">
