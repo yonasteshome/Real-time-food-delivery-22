@@ -116,7 +116,7 @@ exports.login = async (req, res) => {
         JSON.stringify({ code, verificationCode })
       );
       return res.status(403).json({
-        message: "Please verify your phone number first."
+        message: "Please verify your phone number first.",
       });
     }
 
@@ -151,7 +151,6 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
 
 exports.refreshToken = async (req, res) => {
   try {

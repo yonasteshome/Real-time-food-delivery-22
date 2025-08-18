@@ -38,7 +38,7 @@ const addMenuItem = async (req, res) => {
   const { name, price, description, image, inStock } = req.body;
 
   try {
-    const restaurant = await Restaurant.findById(req.params.restaurantId);
+    const restaurant = await Restaurant.findById(req.params.id);
     if (!restaurant) {
       return res.status(404).json({ error: "Restaurant not found" });
     }
@@ -61,7 +61,7 @@ const addMenuItem = async (req, res) => {
 
 const deleteMenuItem = async (req, res) => {
   try {
-    const restaurant = await Restaurant.findById(req.params.restaurantId);
+    const restaurant = await Restaurant.findById(req.params.id);
     if (!restaurant)
       return res.status(404).json({ error: "Restaurant not found" });
 
@@ -77,7 +77,7 @@ const deleteMenuItem = async (req, res) => {
 };
 const updateMenuItem = async (req, res) => {
   try {
-    const restaurant = await Restaurant.findById(req.params.restaurantId);
+    const restaurant = await Restaurant.findById(req.params.id);
 
     if (!restaurant) {
       return res.status(404).json({ error: "Restaurant not found" });
@@ -103,13 +103,20 @@ const updateMenuItem = async (req, res) => {
       updatedItem: menuItem,
     });
   } catch (err) {
-    console.error("Update error:", err);
+    logger.error("Update error:", err);
     res.status(500).json({ error: "Server error during update" });
   }
 };
 // GET /api/restaurants/:id/menu
 const getMenu = async (req, res) => {
   try {
+    const id = req.params.id;
+
+    logger.info(id);
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: "Invalid restaurant ID" });
+    }
+
     const restaurant = await Restaurant.findById(req.params.id);
     if (!restaurant)
       return res.status(404).json({ error: "Restaurant not found" });
@@ -151,18 +158,18 @@ const registerRestaurant = async (req, res) => {
       data: { restaurant },
     });
   } catch (err) {
-    console.error(err.message); 
+    console.error(err.message);
     logger.error("Error registering restaurant:", err);
     res.status(500).json({ message: err.message });
   }
 };
-const pendingRestaurant= async(req, res)=>{
+const pendingRestaurant = async (req, res) => {
   try {
     const pending = await Restaurant.find({ verified: false, deleted: false });
     res.status(200).json({
       status: "success",
       data: { pending },
-    }); 
+    });
   } catch (error) {
     console.error("Error fetching pending restaurants:", error);
     logger.error("Error fetching pending restaurants:", error);

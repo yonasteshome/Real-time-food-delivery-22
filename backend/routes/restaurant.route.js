@@ -14,10 +14,10 @@ const {
 
 router.get("/", getAllRestaurants);
 router.get("/:id", getRestaurantById);
-router.post("/:restaurantId/menu", addMenuItem);
-router.delete("/:restaurantId/menu/:itemId", deleteMenuItem);
-router.put("/:restaurantId/menu/:itemId", updateMenuItem);
-router.get("/:restaurantId/menu", getMenu);
+router.post("/:id/menu", addMenuItem);
+router.delete("/:id/menu/:itemId", deleteMenuItem);
+router.put("/:id/menu/:itemId", updateMenuItem);
+router.get("/:id/menu", getMenu);
 router.post("/register", registerRestaurant);
 router.get("/admin/pending", pendingRestaurant);
 router.put("/admin/verify/:id", verifyRestaurant);
