@@ -24,7 +24,7 @@ const updateCartItemSchema = Joi.object({
 });
 
 const removeFromCartSchema = Joi.object({
-  itemId: JoiObjectId().required().messages({
+  itemId: JoiObjectID().required().messages({
     "string.pattern.base": "Valid item ID required",
   }),
 });

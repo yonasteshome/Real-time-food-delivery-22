@@ -12,8 +12,6 @@ const {
   registerRestaurant,
 } = require("../controllers/restaurant.controller");
 
-
-
 router.post("/register", registerRestaurant);
 
 
