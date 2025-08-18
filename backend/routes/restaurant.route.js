@@ -1,4 +1,6 @@
 const express = require("express");
+const protect = require("../middlewares/auth.middleware");
+const restrictTo = require("../middlewares/restrictTo");
 const router = express.Router();
 const {
   getAllRestaurants,
@@ -8,18 +10,18 @@ const {
   updateMenuItem,
   getMenu,
   registerRestaurant,
-  pendingRestaurant,
-  verifyRestaurant,
 } = require("../controllers/restaurant.controller");
 
-router.get("/", getAllRestaurants);
-router.get("/:id", getRestaurantById);
-router.post("/:restaurantId/menu", addMenuItem);
-router.delete("/:restaurantId/menu/:itemId", deleteMenuItem);
-router.put("/:restaurantId/menu/:itemId", updateMenuItem);
-router.get("/:restaurantId/menu", getMenu);
+
+
 router.post("/register", registerRestaurant);
-router.get("/admin/pending", pendingRestaurant);
-router.put("/admin/verify/:id", verifyRestaurant);
+
+
+router.get("/", protect, getAllRestaurants);
+router.get("/:id", protect, getRestaurantById);
+router.post("/:restaurantId/menu", protect, restrictTo('restaurant'), addMenuItem);
+router.delete("/:restaurantId/menu/:itemId", protect, restrictTo('restaurant', 'admin'), deleteMenuItem);
+router.put("/:restaurantId/menu/:itemId", protect, restrictTo('restaurant'), updateMenuItem);
+router.get("/:restaurantId/menu", protect, getMenu);
 
 module.exports = router;

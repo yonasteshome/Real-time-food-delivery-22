@@ -2,6 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const authRoutes = require("./routes/auth.Routes");
 const restaurantRoutes = require("./routes/restaurant.route");
+const adminRoutes = require("./routes/admin.routes");
+
 const cors = require("cors");
 const connectDB = require("./config/db");
 const { connectRedis } = require("./config/redis");
@@ -28,6 +30,7 @@ Promise.all([connectDB(), connectRedis()]).catch((err) => {
 // API Routes
 app.use("/api/delivery/auth", authRoutes);
 app.use("/api/delivery/restaurants", restaurantRoutes);
+app.use("api/delivery/admin", adminRoutes)
 
 // Error handling
 app.use((err, req, res, next) => {
