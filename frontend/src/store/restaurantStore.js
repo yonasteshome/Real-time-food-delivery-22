@@ -1,5 +1,3 @@
-// src/store/restaurantStore.js
-
 import { create } from "zustand";
 import { fetchNearbyRestaurants } from "../api/restaurantApi";
 

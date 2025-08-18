@@ -2,6 +2,8 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import useStore from "../store/useStore";
 
+const currency = (n) => (typeof n === "number" ? n.toFixed(2) : n);
+
 const OrderConfirmationPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -19,64 +21,78 @@ const OrderConfirmationPage = () => {
 
   if (!cartItems)
     return (
-      <p className="text-center text-lg text-gray-600 mt-10">No order found.</p>
+      <p className="text-center text-lg text-black/70 mt-10">No order found.</p>
     );
 
   return (
-    <div className="bg-white min-h-screen py-10 px-6">
-      <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-        <h1 className="text-3xl font-bold mb-4 text-[#FF0000]">
-          Order Confirmed! 🎉
-        </h1>
-        <p className="text-gray-700 mb-4">
-          Your delicious order is on its way!
-        </p>
+    <div className="relative bg-white min-h-screen overflow-hidden">
+      <div className="pointer-events-none absolute top-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-[#FFD700] rounded-full blur-[150px] opacity-20" />
+      <div className="pointer-events-none absolute bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-[#FF0000] rounded-full blur-[150px] opacity-20" />
 
-        <div className="mb-6">
-          <p className="mb-2">
-            <span className="font-semibold">Delivery Address:</span> {address}
+      <div className="relative z-10 py-10 px-6">
+        <div className="max-w-2xl mx-auto group bg-black/5 backdrop-blur-sm border border-black/10 rounded-2xl shadow-lg p-6 sm:p-8 hover:bg-[#FFD700]/10 transition-all duration-300">
+          <h1 className="text-3xl sm:text-4xl font-extrabold mb-2 bg-gradient-to-r from-[#FF0000] via-[#FFD700] to-[#FF0000] bg-clip-text text-transparent">
+            Order Confirmed! 🎉
+          </h1>
+          <p className="text-black/70 mb-6">
+            Your delicious order is on its way!
           </p>
-          <p>
-            <span className="font-semibold">Payment Method:</span>{" "}
-            {paymentMethod}
-          </p>
-        </div>
 
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">Order Summary</h2>
-          <ul className="space-y-1">
-            {cartItems.map((item) => (
-              <li
-                key={item.id}
-                className="flex justify-between border-b border-gray-100 pb-1"
-              >
-                <span>
-                  {item.name} x {item.quantity}
-                </span>
-                <span className="font-medium">
-                  ${item.price * item.quantity}
-                </span>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-3 text-lg font-bold">
-            Total: <span className="text-[#FF0000]">${total}</span>
-          </p>
-        </div>
+          <div className="mb-6 space-y-2">
+            <p className="text-black">
+              <span className="font-semibold text-black">
+                Delivery Address:
+              </span>{" "}
+              <span className="text-black/80">{address || "—"}</span>
+            </p>
+            <p className="text-black">
+              <span className="font-semibold text-black">Payment Method:</span>{" "}
+              <span className="text-black/80">{paymentMethod || "—"}</span>
+            </p>
+          </div>
 
-        <div className="flex space-x-4">
-          <button
-            onClick={handleFeedback}
-            className="flex-1 bg-[#FFD700] hover:bg-yellow-500 text-black font-semibold py-3 rounded-lg shadow-md transition-colors duration-200"
-          >
-            Go to Feedback
-          </button>
-          <button
-            onClick={handleSkipFeedback}
-            className="flex-1 bg-[#FF0000] hover:bg-red-700 text-white font-semibold py-3 rounded-lg shadow-md transition-colors duration-200"
-          >
-            Skip Feedback
-          </button>
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-3 text-[#FF0000]">
+              Order Summary
+            </h2>
+            <ul className="space-y-2">
+              {cartItems.map((item) => (
+                <li
+                  key={item.id}
+                  className="flex justify-between items-center border-b border-black/10 pb-2 text-black"
+                >
+                  <span className="text-black/80">
+                    {item.name}{" "}
+                    <span className="text-black/60">× {item.quantity}</span>
+                  </span>
+                  <span className="font-medium">
+                    ${currency(item.price * item.quantity)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-lg font-extrabold">
+              Total:{" "}
+              <span className="bg-gradient-to-r from-[#FF0000] to-[#FFD700] text-transparent bg-clip-text">
+                ${currency(total)}
+              </span>
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={handleFeedback}
+              className="flex-1 inline-flex items-center justify-center font-semibold py-3 rounded-xl shadow-md transition-all duration-200 bg-gradient-to-r from-[#FF0000] to-[#FFD700] hover:from-[#FFD700] hover:to-[#FF0000] text-black"
+            >
+              Go to Feedback
+            </button>
+            <button
+              onClick={handleSkipFeedback}
+              className="flex-1 inline-flex items-center justify-center font-semibold py-3 rounded-xl shadow-md transition-colors duration-200 bg-black/5 border border-black/10 text-black hover:bg-[#FF0000] hover:text-white"
+            >
+              Skip Feedback
+            </button>
+          </div>
         </div>
       </div>
     </div>
