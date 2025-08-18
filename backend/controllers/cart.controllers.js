@@ -9,7 +9,7 @@ exports.addToCart = async (req, res) => {
     const { menuItemId, quantity, restaurantId } = req.body;
     const restaurant = await Restaurant.findOne({
       _id: restaurantId,
-      delete: false,
+      deleted: false,
     });
     if (!restaurant)
       return res.status(404).json({ message: "Restaurant not found" });
@@ -20,7 +20,7 @@ exports.addToCart = async (req, res) => {
         .status(404)
         .json({ message: "Menu item not found or unavailable" });
 
-    let cart = await Cart.findOne({ customerID: req.user._id, restaurantId });
+    let cart = await Cart.findOne({ customerId: req.user._id, restaurantId });
     if (!cart) {
       cart = new Cart({
         customerId: req.user._id,
@@ -65,12 +65,12 @@ exports.addToCart = async (req, res) => {
 
 exports.updateCartItem = async (req, res) => {
   try {
-    const { itemId } = req.params;
+    const { id } = req.params;
     const { quantity } = req.body;
     const cart = await Cart.findOne({ customerId: req.user._id });
     if (!cart) return res.status(404).json({ message: "Cart not found" });
 
-    const item = cart.items.id(itemId);
+    const item = cart.items.id(id);
     if (!item) return res.status(404).json({ message: "Cart item not found" });
 
     item.quantity = quantity;
@@ -87,16 +87,36 @@ exports.updateCartItem = async (req, res) => {
   }
 };
 
+exports.deleteCart = async (req, res) => {
+  try {
+    const customerId = req.user._id;
+    const { restaurantId } = req.params;
+
+    const cart = await Cart.findOneAndDelete({ customerId, restaurantId });
+
+    if (!cart) {
+      return res
+        .status(404)
+        .json({ message: "Cart not found for this restaurant" });
+    }
+
+    return res.status(200).json({ message: "Cart deleted successfully" });
+  } catch (error) {
+    logger.error(`Error deleting cart: ${error.message}`);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
 exports.removeFromCart = async (req, res) => {
   try {
-    const { itemId } = req.params;
+    const { id } = req.params;
     const cart = await Cart.findOne({ customerId: req.user._id });
     if (!cart) return res.status(404).json({ message: "Cart not found" });
 
-    const item = cart.items.id(itemId);
-    if (!item) return res.status(404), json({ message: "Cart item not found" });
+    const item = cart.items.id(id);
+    if (!item) return res.status(404).json({ message: "Cart item not found" });
 
-    cart.items.pull(itemId);
+    cart.items.pull(id);
     cart.total = cart.items.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
@@ -113,7 +133,7 @@ exports.removeFromCart = async (req, res) => {
 
 exports.getCart = async (req, res) => {
   try {
-    const cacheKey = `cart:${res.user._id}`;
+    const cacheKey = `cart:${req.user._id}`;
     const cached = await checkCache(cacheKey);
     if (cached) {
       return res.status(200).json({ message: "success", data: cached });
