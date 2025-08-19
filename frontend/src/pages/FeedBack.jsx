@@ -1,71 +1,62 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import useStore from "../store/useStore";
 
 const FeedbackPage = () => {
+  const navigate = useNavigate();
+
+  // Zustand state
+  const feedbackText = useStore((state) => state.feedbackText);
+  const setFeedbackText = useStore((state) => state.setFeedbackText);
+  const clearFeedback = useStore((state) => state.clearFeedback);
+
+  const handleSubmit = () => {
+    console.log("Feedback submitted:", feedbackText);
+    clearFeedback();
+    navigate("/ordertracking");
+  };
+
+  const handleSkip = () => {
+    clearFeedback();
+    navigate("/ordertracking");
+  };
+
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4">
-      <div className="max-w-xl w-full shadow-lg border border-gray-100 rounded-2xl p-8">
-        <h1 className="text-2xl font-bold mb-4 text-black">
-          Delivery Feedback
-        </h1>
-        <p className="text-gray-600 mb-6">
-          We’d love to hear your thoughts on your recent order.
-        </p>
-        <form>
-          <div className="mb-5">
-            <label className="block text-sm font-semibold text-black mb-2">
-              Rating
-            </label>
-            <div className="flex gap-2">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <span
-                  key={star}
-                  className="text-2xl text-gray-300"
-                  //onClick={() => setRating(star)}
-                  // className={`text-2xl ${
-                  //   rating >= star ? "text-yellow-400" : "text-gray-300"
-                  // }`}
-                  // aria-label={`${star} star`}
-                  aria-label={`${star} star`}
-                >
-                  ★
-                </span>
-              ))}
-            </div>
+    <div className="relative bg-white min-h-screen overflow-hidden">
+      {/* Animated background orbs */}
+      <div className="pointer-events-none absolute top-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-[#FFD700] rounded-full blur-[150px] opacity-20" />
+      <div className="pointer-events-none absolute bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-[#FF0000] rounded-full blur-[150px] opacity-20" />
+
+      {/* Content */}
+      <div className="relative z-10 py-10 px-6">
+        <div className="max-w-2xl mx-auto bg-black/5 backdrop-blur-sm border border-black/10 rounded-2xl shadow-lg p-6 sm:p-8">
+          <h1 className="text-3xl sm:text-4xl font-extrabold mb-6 bg-gradient-to-r from-[#FF0000] via-[#FFD700] to-[#FF0000] bg-clip-text text-transparent">
+            Feedback
+          </h1>
+
+          <textarea
+            value={feedbackText}
+            onChange={(e) => setFeedbackText(e.target.value)}
+            placeholder="Write your feedback here"
+            rows={5}
+            className="w-full p-4 rounded-xl border border-black/10 bg-white/70 focus:outline-none focus:ring-2 focus:ring-[#FFD700] text-black placeholder-black/50"
+          />
+
+          <div className="mt-6 flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={handleSubmit}
+              className="flex-1 inline-flex items-center justify-center font-semibold py-3 rounded-xl shadow-md transition-all duration-200 bg-gradient-to-r from-[#FF0000] to-[#FFD700] hover:from-[#FFD700] hover:to-[#FF0000] text-black"
+            >
+              Submit
+            </button>
+            <button
+              onClick={handleSkip}
+              className="flex-1 inline-flex items-center justify-center font-semibold py-3 rounded-xl shadow-md transition-colors duration-200 bg-black/5 border border-black/10 text-black hover:bg-[#FF0000] hover:text-white"
+            >
+              Skip Feedback
+            </button>
           </div>
-          <div className="mb-6">
-            <label className="block text-sm font-semibold text-black mb-2">
-              Your Feedback
-            </label>
-            <textarea
-              // onChange={(e) => setFeedback(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-red-400"
-              rows="5"
-              placeholder="Tell us about the food, delivery experience, or anything else..."
-              disabled
-              //required
-            />
-          </div>
-          <div className="flex justify-between">
-            <Link to="/">
-              <button
-                type="button"
-                // onClick={}
-                className="text-red-400 hover:underline text-sm"
-              >
-                Skip Feedback
-              </button>
-            </Link>
-            <Link to="/">
-              <button
-                type="submit"
-                className="bg-red-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-red-600 transition-all"
-              >
-                Submit Feedback
-              </button>
-            </Link>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   );
