@@ -1,13 +1,19 @@
-const express = require('express')
-const router = express.Router();
-
-const {pendingRestaurant, verifyRestaurant} = require("../controllers/admin.controller");
-
+const express = require("express");
+const {
+  rejectRestaurant,
+  getUserByRoles,
+} = require("../controllers/admin.controllers");
 const protect = require("../middlewares/auth.middleware");
 const restrictTo = require("../middlewares/restrictTo");
 
-router.get("/restaurant/pending", protect, restrictTo('admin'), pendingRestaurant);
-router.put("/restaurant/verify/:id", protect, restrictTo('admin'), verifyRestaurant);
+const router = express.Router();
+
+router.get("/users", protect, restrictTo("admin"), getUserByRoles);
+router.patch(
+  "/restaurants/:id/reject",
+  protect,
+  restrictTo("admin"),
+  rejectRestaurant
+);
 
 module.exports = router;
-

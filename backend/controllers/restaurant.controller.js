@@ -121,6 +121,8 @@ const updateMenuItem = async (req, res) => {
     res.status(500).json({ error: "Server error during update" });
   }
 };
+<<<<<<< HEAD
+=======
 
 // Get restaurant menu
 const getMenu = async (req, res) => {
@@ -145,6 +147,7 @@ const getMenu = async (req, res) => {
   }
 };
 
+>>>>>>> 4894594cddcf66ba28604df3cc3095b011e3d0de
 // Register restaurant (creates user + restaurant)
 const registerRestaurant = async (req, res) => {
   try {
@@ -166,13 +169,48 @@ const registerRestaurant = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+<<<<<<< HEAD
+// Get restaurant menu
+const getMenus = async (req, res) => {
+  try {
+    const restaurant = await Restaurant.findById(req.params.restaurantId);
+    if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
+
+    res.status(200).json(restaurant.menu);
+  } catch (err) {
+    logger.error("Failed to fetch menu:", err);
+    res.status(500).json({ error: "Failed to fetch menu" });
+  }
+};
+const getMenuItem = async (req, res) => {
+  try {
+    const restaurant = await Restaurant.findById(req.params.restaurantId);
+    if (!restaurant) {
+      return res.status(404).json({ error: "Restaurant not found" });
+    }
+
+    const menuItem = restaurant.menu.id(req.params.itemId); 
+    if (!menuItem) {
+      return res.status(404).json({ error: "Menu item not found" });
+    }
+
+    res.status(200).json(menuItem);
+  } catch (err) {
+    logger.error("Failed to fetch menu item:", err); 
+    res.status(500).json({ error: "Failed to fetch menu item" });
+  }
+};
+
+=======
 n
+>>>>>>> 4894594cddcf66ba28604df3cc3095b011e3d0de
 
 
 module.exports = {
   getAllRestaurants,
   getRestaurantById,
-  getMenu,
+  getMenus,
+  getMenuItem,
   addMenuItem,
   deleteMenuItem,
   updateMenuItem,
