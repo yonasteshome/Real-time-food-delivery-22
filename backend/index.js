@@ -1,6 +1,6 @@
 require("dotenv").config();
 const express = require("express");
-
+// fixed routes
 const authRoutes = require("./routes/auth.Routes");
 const restaurantRoutes = require("./routes/restaurant.route");
 
