@@ -87,6 +87,7 @@ exports.getOrderHistory = async (req, res) => {
 
     let query = {};
     if (role === "customer") query.customerId = userID;
+    if (role === "admin") query.customerId = userID;
     else if (role === "restaurant") query.restaurantId = userID;
 
     const orders = await Order.find(query)

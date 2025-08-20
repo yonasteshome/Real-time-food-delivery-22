@@ -19,7 +19,7 @@ router.post(
 router.get(
   "/all",
   protect,
-  restrictTo("customer", "restaurant"),
+  restrictTo("customer", "restaurant", "admin"),
   getOrderHistory
 );
 
