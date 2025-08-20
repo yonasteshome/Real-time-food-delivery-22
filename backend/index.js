@@ -6,13 +6,13 @@ const authRoutes = require("./routes/auth.Routes");
 const restaurantRoutes = require("./routes/restaurant.route");
 
 const swaggerUi = require("swagger-ui-express");
-const swaggerFile = require("./swagger-output.json"); // generated file
+const swaggerFile = require("./swagger-output.json"); 
 
 const adminRoutes = require("./routes/admin.Routes");
 const cartRoutes = require("./routes/cart.routes");
 const orderRoutes = require("./routes/order.routes");
 
-const orderRoutes = require("./routes/order.routes");
+
 const cors = require("cors");
 const connectDB = require("./config/db");
 const { connectRedis } = require("./config/redis");
