@@ -2,7 +2,7 @@ const express = require("express");
 const {
   rejectRestaurant,
   getUserByRoles,
-} = require("../controllers/admin.controllers");
+} = require("../controllers/admin.controller");
 const protect = require("../middlewares/auth.middleware");
 const restrictTo = require("../middlewares/restrictTo");
 

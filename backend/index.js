@@ -8,10 +8,14 @@ const restaurantRoutes = require("./routes/restaurant.route");
 const swaggerUi = require("swagger-ui-express");
 const swaggerFile = require("./swagger-output.json"); // generated file
 
+<<<<<<< HEAD
+=======
 
 
+>>>>>>> 287630e5e635032377fc2bd8db3050c7049c0d39
 const adminRoutes = require("./routes/admin.Routes");
 const cartRoutes = require("./routes/cart.routes");
+const orderRoutes = require("./routes/order.routes");
 
 const orderRoutes = require("./routes/order.routes");
 const cors = require("cors");
@@ -28,7 +32,10 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> 287630e5e635032377fc2bd8db3050c7049c0d39
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 // Connect to MongoDB and Redis
 Promise.all([connectDB(), connectRedis()]).catch((err) => {
@@ -41,10 +48,12 @@ Promise.all([connectDB(), connectRedis()]).catch((err) => {
 // API Routes
 app.use("/api/delivery/auth", authRoutes);
 app.use("/api/delivery/restaurants", restaurantRoutes);
-
 app.use("/api/delivery/admin", adminRoutes);
 app.use("/api/delivery/customer", cartRoutes);
+<<<<<<< HEAD
+=======
 
+>>>>>>> 287630e5e635032377fc2bd8db3050c7049c0d39
 app.use("/api/delivery/orders", orderRoutes);
 
 // Error handling
