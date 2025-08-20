@@ -12,6 +12,7 @@ import NearbyRestaurants from './pages/NearbyRestaurants';
 import Sidebar from './components/Sidebar';
 import MenuPage from './pages/MenuPage';
 import CartPage from './pages/CartPage';
+import OrderStatus from "./pages/OrderStatus";
 
 function App() {
   return (
@@ -29,7 +30,7 @@ function App() {
         <Route path="/sidebar" element={<Sidebar />} />
         <Route path="/menu/:restaurantId" element={<MenuPage />} />
         <Route path="/cart" element={<CartPage />} />
-
+        <Route path="/order-status" element={<OrderStatus />} />
       </Routes>
     </Router>
   );
