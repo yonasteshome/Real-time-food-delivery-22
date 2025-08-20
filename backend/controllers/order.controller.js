@@ -47,3 +47,19 @@ exports.createOrder = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+exports.getOrdersByRestaurant = async (req, res) => {
+  try {
+    const orders = await Order.find({
+      restaurantId: req.params.restaurantId
+    }).populate("items.menuItemId", "name price").populate("customerId", "name email");
+
+    if (!orders) {
+      return res.status(404).json({ message: "Orders not found" });
+    }
+
+    res.status(200).json({ message: "success", data: orders });
+  } catch (err) {
+    console.error(`Error fetching the orders: ${err.message}`);
+    res.status(500).json({ message: "Server error" });
+  }
+};
