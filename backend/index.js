@@ -10,8 +10,7 @@ const swaggerFile = require("./swagger-output.json");
 const adminRoutes = require("./routes/admin.routes");
 const cartRoutes = require("./routes/cart.routes");
 const orderRoutes = require("./routes/order.routes");
-const cartRoutes = require("./routes/cart.routes");
-const orderRoutes = require("./routes/order.routes");
+
 
 const cors = require("cors");
 const connectDB = require("./config/db");

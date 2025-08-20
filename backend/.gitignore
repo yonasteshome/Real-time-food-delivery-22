@@ -2,4 +2,3 @@ node_modules/
 .env
 combined.log
 error.log
-swagger-output.json
