@@ -1,22 +1,9 @@
 const Cart = require("../models/Cart");
-const Joi = require("joi");
 const Order = require("../models/Order");
 const Restaurant = require("../models/Restaurant");
 const { client: redisClient } = require("../config/redis");
 const logger = require("../utils/logger");
 
-// Joi schema for order history query (pagination only)
-const orderQuerySchema = Joi.object({
-  page: Joi.number()
-    .integer()
-    .min(1)
-    .default(1)
-    .messages({ "number.min": "Page must be atleast 1." }),
-  limit: Joi.number().integer().min(1).max(100).default(10).messages({
-    "number.min": "Limit must be at least 1",
-    "number.max": "Limit cannot excees 100",
-  }),
-});
 exports.createOrder = async (req, res) => {
   try {
     const { deliveryLocation, paymentMethod } = req.body;
@@ -25,10 +12,9 @@ exports.createOrder = async (req, res) => {
       return res.status(404).json({ message: "Cart is empty or not found" });
 
     const restaurant = await Restaurant.findOne({
-      _id: cart.restaurantId,
+      id: cart.restaurantId,
+      deleted: false,
     });
-    logger.info("Cart items:", cart.items, "Total:", cart.total);
-
     if (!restaurant)
       return res.status(404).json({ message: "Restaurant not found" });
 
@@ -40,24 +26,18 @@ exports.createOrder = async (req, res) => {
         });
       }
     }
-    let total = cart.total;
-    if (!total) {
-      total = cart.items.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-      );
-    }
+
     const order = new Order({
       customerId: req.user._id,
       restaurantId: cart.restaurantId,
       items: cart.items,
-      total,
+      total: cart.total,
       deliveryLocation,
       paymentMethod,
       status: "pending",
     });
 
-    await order.save();
+    await Order.save();
     await Cart.deleteOne({ customerId: req.user._id }); // clear cart
     await redisClient.del(`cart:${req.user._id}`);
     // await redisClient.del(`orders:${cart.restaurantId}`);
@@ -67,48 +47,19 @@ exports.createOrder = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
-exports.getOrderHistory = async (req, res) => {
+exports.getOrdersByRestaurant = async (req, res) => {
   try {
-    const { error, value } = orderQuerySchema.validate(req.query, {
-      abortEarly: false,
-    });
-    if (error) {
-      return res.status(400).json({
-        message: "Validation error",
-        details: error.details.map((err) => err.message),
-      });
+    const orders = await Order.find({
+      restaurantId: req.params.restaurantId
+    }).populate("items.menuItemId", "name price").populate("customerId", "name email");
+
+    if (!orders) {
+      return res.status(404).json({ message: "Orders not found" });
     }
 
-    const { page, limit } = value;
-    const skip = (page - 1) * limit;
-    const userID = req.user.id;
-    const role = req.user.role;
-
-    let query = {};
-    if (role === "customer") query.customerId = userID;
-    else if (role === "restaurant") query.restaurantId = userID;
-
-    const orders = await Order.find(query)
-      .select("__v")
-      .populate("customerId", "email")
-      .populate("restaurantId", "email")
-      .populate("status")
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
-
-    const total = await Order.countDocuments(query);
-
-    if (!orders.length) {
-      return res.status(404).json({ message: "No orders found" });
-    }
-
-    res.status(200).json({
-      message: "Orders retrived successfully",
-      data: { total, page, limit, orders },
-    });
+    res.status(200).json({ message: "success", data: orders });
   } catch (err) {
-    logger.error(`Error fetching orders: ${err.message}`);
+    console.error(`Error fetching the orders: ${err.message}`);
+    res.status(500).json({ message: "Server error" });
   }
 };

@@ -1,10 +1,7 @@
 const express = require("express");
-const {
-  createOrder,
-  getOrderHistory,
-} = require("../controllers/order.controller");
+const { createOrder, getOrdersByRestaurant } = require("../controllers/order.controller");
 const { validateCreateOrder } = require("../validators/orderValidator");
-const protect = require("../middlewares/auth.middleware.js");
+const protect = require("../middlewares/auth.middleware");
 const restrictTo = require("../middlewares/restrictTo");
 
 const router = express.Router();
@@ -12,15 +9,9 @@ const router = express.Router();
 router.post(
   "/",
   protect,
-  restrictTo("customer", "restaurant", "admin"),
+  restrictTo("customer","restaurant","admin"),
   validateCreateOrder,
   createOrder
 );
-router.get(
-  "/all",
-  protect,
-  restrictTo("customer", "restaurant"),
-  getOrderHistory
-);
-
+router.get("/:restaurantId/order", protect, restrictTo("customer", "restaurant", "admin"), getOrdersByRestaurant);
 module.exports = router;
