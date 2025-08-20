@@ -2,6 +2,8 @@ const express = require("express");
 const {
   rejectRestaurant,
   getUserByRoles,
+  getAllRestaurants,
+  getPlatformStats,
 } = require("../controllers/admin.controller");
 const protect = require("../middlewares/auth.middleware");
 const restrictTo = require("../middlewares/restrictTo");
@@ -15,5 +17,7 @@ router.patch(
   restrictTo("admin"),
   rejectRestaurant
 );
+router.get("/restaurants", protect, restrictTo("admin"), getAllRestaurants);
+router.get("/stats", protect, restrictTo("admin"), getPlatformStats);
 
 module.exports = router;
