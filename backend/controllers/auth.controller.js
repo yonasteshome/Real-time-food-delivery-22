@@ -9,7 +9,7 @@ const { ref } = require("joi");
 
 exports.register = async (req, res) => {
   try {
-    const { email, phone, password, restaurantId } = req.body;
+    const { email, phone, password, restaurantId, role } = req.body;
     const userExist = await User.findOne({ $or: [{ email }, { phone }] });
     if (userExist)
       return res.status(400).json({ message: "User alreaady exists" });
@@ -19,6 +19,7 @@ exports.register = async (req, res) => {
       phone,
       password,
       restaurantId,
+      role,
     });
 
     const { verificationCode, code } = await sendOTP(phone);
