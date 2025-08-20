@@ -5,9 +5,11 @@ const authRoutes = require("./routes/auth.Routes");
 const restaurantRoutes = require("./routes/restaurant.route");
 
 const swaggerUi = require("swagger-ui-express");
-const swaggerFile = require("./swagger-output.json"); // generated file
+const swaggerFile = require("./swagger-output.json"); 
 
 const adminRoutes = require("./routes/admin.routes");
+const cartRoutes = require("./routes/cart.routes");
+const orderRoutes = require("./routes/order.routes");
 const cartRoutes = require("./routes/cart.routes");
 const orderRoutes = require("./routes/order.routes");
 
@@ -38,7 +40,9 @@ Promise.all([connectDB(), connectRedis()]).catch((err) => {
 app.use("/api/delivery/auth", authRoutes);
 app.use("/api/delivery/admin", adminRoutes);
 app.use("/api/delivery/customer", cartRoutes);
+
 app.use("/api/delivery/restaurants", restaurantRoutes);
+
 app.use("/api/delivery/orders", orderRoutes);
 
 // Error handling
