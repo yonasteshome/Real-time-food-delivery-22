@@ -5,16 +5,14 @@ import useAuthStore from "../store/authStore";
 export const Login = () => {
   const login = useAuthStore((state) => state.login);
   const navigate = useNavigate();
-  const blurDiv = useRef(null); // Ref for dummy focus element
+  const blurDiv = useRef(null); // Dummy focus to hide cursor
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
 
-  // 👇 Prevent cursor by focusing dummy element
+  // Focus dummy div to prevent cursor flash
   useEffect(() => {
-    if (blurDiv.current) {
-      blurDiv.current.focus();
-    }
+    if (blurDiv.current) blurDiv.current.focus();
   }, []);
 
   const handleChange = (e) => {
@@ -25,7 +23,7 @@ export const Login = () => {
     e.preventDefault();
     const result = await login(form.email, form.password);
     if (result.success) {
-      navigate("/nearby");
+      navigate("/nearby"); // cookies sent automatically
     } else {
       setError(result.message || "Login failed");
     }
@@ -33,7 +31,6 @@ export const Login = () => {
 
   return (
     <>
-      {/* 👇 Hidden dummy element to grab initial focus */}
       <div
         ref={blurDiv}
         tabIndex={-1}

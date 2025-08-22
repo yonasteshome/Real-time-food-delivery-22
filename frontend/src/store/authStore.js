@@ -1,18 +1,24 @@
-// store.js
 import { create } from "zustand";
 import axios from "axios";
+
+// ✅ Axios instance with cookies enabled
+const api = axios.create({
+  baseURL: "http://localhost:5000/api/delivery",
+  withCredentials: true, // important for HttpOnly cookies
+});
 
 const useAuthStore = create((set) => ({
   isLoggedIn: false,
   user: null,
-  token: null,
-  pendingUser: null, // ✅ add this
+  pendingUser: null, // for signup verification
 
+  // Login
   login: async (email, password) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/delivery/auth/login', { email, password });
-      const { user, token } = response.data;
-      set({ isLoggedIn: true, user, token });
+      const response = await api.post("/auth/login", { email, password });
+
+      // ✅ Only store user info, token is in HttpOnly cookie
+      set({ isLoggedIn: true, user: response.data.data });
       return { success: true };
     } catch (err) {
       return {
@@ -22,22 +28,35 @@ const useAuthStore = create((set) => ({
     }
   },
 
+  // Logout
+  logout: async () => {
+    try {
+      // Optional: backend logout endpoint to clear cookie
+      await api.post("/auth/logout");
+    } catch {}
+    set({ isLoggedIn: false, user: null, pendingUser: null });
+  },
+
+  // Check session / refresh
+  checkAuth: async () => {
+    try {
+      const res = await api.get("/auth/refresh-token");
+      set({ isLoggedIn: true, user: res.data.data });
+    } catch {
+      set({ isLoggedIn: false, user: null });
+    }
+  },
+
+  // Signup (optional, preserves your existing pendingUser flow)
   signupUser: async (email, phone, password, role) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/delivery/auth/register', {
+      const response = await api.post("/auth/register", {
         email,
         phone,
         password,
         role,
       });
-
-      const { id, token } = response.data;
-
-      // ✅ Save data for verification
-      set({
-        pendingUser: { id, email, phone, role },
-      });
-
+      set({ pendingUser: { id: response.data.data.userid, email, phone, role } });
       return { success: true };
     } catch (err) {
       return {
@@ -45,10 +64,6 @@ const useAuthStore = create((set) => ({
         message: err.response?.data?.message || err.message || "Signup failed",
       };
     }
-  },
-
-  logout: () => {
-    set({ isLoggedIn: false, user: null, token: null, pendingUser: null });
   },
 }));
 

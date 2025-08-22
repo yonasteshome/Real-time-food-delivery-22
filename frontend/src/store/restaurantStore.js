@@ -1,3 +1,4 @@
+// src/store/restaurantStore.js
 import { create } from "zustand";
 import { fetchNearbyRestaurants } from "../api/restaurantApi";
 
@@ -14,9 +15,7 @@ const useRestaurantStore = create((set) => ({
     try {
       const data = await fetchNearbyRestaurants(lat, lng);
 
-      const uniqueTypes = [
-        ...new Set(data.map((r) => r.type).filter(Boolean)),
-      ].sort();
+      const uniqueTypes = [...new Set(data.map((r) => r.type).filter(Boolean))].sort();
 
       set({
         restaurants: data,

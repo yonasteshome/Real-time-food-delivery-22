@@ -3,7 +3,12 @@ import { useState, useRef, useEffect } from "react";
 import useAuthStore from "../store/authStore";
 
 const Signup = () => {
-  const [form, setForm] = useState({ email: "", phone: "", password: "", role: "customer" });
+  const [form, setForm] = useState({
+    email: "",
+    phone: "",
+    password: "",
+    role: "customer",
+  });
   const { signupUser } = useAuthStore();
   const navigate = useNavigate();
   const blurDiv = useRef(null);
@@ -18,16 +23,19 @@ const Signup = () => {
     e.preventDefault();
     setLoading(true);
     setError("");
+
     const { success, message } = await signupUser(
       form.email,
       form.phone,
       form.password,
       form.role
     );
+
     setLoading(false);
 
     if (success) {
-      navigate("/verify"); // No need to pass state here
+      // Pending verification (OTP)
+      navigate("/verify"); 
     } else {
       setError(message || "Signup failed");
     }
@@ -37,6 +45,7 @@ const Signup = () => {
 
   return (
     <>
+      {/* Hidden dummy element to grab initial focus */}
       <div
         ref={blurDiv}
         tabIndex={-1}
@@ -46,6 +55,7 @@ const Signup = () => {
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="bg-white flex w-full max-w-5xl overflow-hidden">
 
+          {/* Image Section */}
           <div
             className="hidden md:block w-1/2 pointer-events-none select-none"
             tabIndex={-1}
@@ -58,6 +68,7 @@ const Signup = () => {
             />
           </div>
 
+          {/* Form Section */}
           <div className="w-full md:w-1/2 p-10">
             <h1 className="text-3xl font-bold mb-2 text-gray-800">Welcome!</h1>
             <p className="text-sm text-gray-500 mb-6">Register here using the form below</p>
