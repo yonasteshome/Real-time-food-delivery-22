@@ -10,6 +10,7 @@ const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const inputsRef = useRef([]);
 
   if (!phone) {
@@ -49,43 +50,51 @@ const ResetPassword = () => {
     e.preventDefault();
     setMessage("");
     setError("");
+    setLoading(true);
 
     if (otp.includes("")) {
       setError("Please enter the full 6-digit OTP code.");
+      setLoading(false);
       return;
     }
 
     if (newPassword.length < 6) {
       setError("Password must be at least 6 characters.");
+      setLoading(false);
       return;
     }
 
     const otpCode = otp.join("");
 
     try {
-      const res = await fetch("http://localhost:5000/api/delivery/auth/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, code: otpCode, newPassword }),
-      });
+      const res = await fetch(
+        "http://localhost:5000/api/delivery/auth/reset-password",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include", // ✅ Important for HttpOnly cookies
+          body: JSON.stringify({ phone, code: otpCode, newPassword }),
+        }
+      );
 
       const data = await res.json();
 
       if (res.ok && data.status === "success") {
-        setMessage("✅ Password reset successful! Redirecting...");
+        setMessage("✅ Password reset successful! Redirecting to login...");
         setTimeout(() => navigate("/login"), 2000);
       } else {
         setError(data.message || "Failed to reset password.");
       }
-    } catch {
+    } catch (err) {
       setError("Network error. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="bg-white p-8 rounded-3xl shadow-md w-full max-w-xl text-center">
-        {/* Emoji Icon */}
         <div className="text-4xl text-green-600 mb-4">📩</div>
 
         <h2 className="text-2xl font-bold text-gray-800 mb-2">Verification Code</h2>
@@ -152,9 +161,10 @@ const ResetPassword = () => {
           {/* Confirm Button */}
           <button
             type="submit"
-            className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition"
+            disabled={loading}
+            className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition disabled:opacity-60"
           >
-            Confirm Code & Reset
+            {loading ? "Resetting..." : "Confirm Code & Reset"}
           </button>
 
           {/* Messages */}

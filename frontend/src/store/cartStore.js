@@ -1,40 +1,59 @@
 import { create } from "zustand";
+import { fetchCart, addCartItem, updateCartItemQty, removeCartItem, clearCartByRestaurant } from "../api/cartApi";
 
 const useCartStore = create((set, get) => ({
   cartItems: [],
+  loading: false,
+  error: null,
 
-  addToCart: (item) => {
-    const cartItems = get().cartItems;
-    const index = cartItems.findIndex((i) => i._id === item._id);
-    if (index > -1) {
-      const updated = [...cartItems];
-      updated[index].quantity += 1;
-      set({ cartItems: updated });
-    } else {
-      set({ cartItems: [...cartItems, { ...item, quantity: 1 }] });
+  loadCart: async () => {
+    set({ loading: true });
+    try {
+      const data = await fetchCart();
+      set({ cartItems: data.data.items || [], loading: false });
+    } catch (err) {
+      set({ error: err.message, loading: false });
     }
   },
 
-  removeFromCart: (id) => {
-    set({
-      cartItems: get().cartItems.filter((item) => item._id !== id),
-    });
+  addToCart: async (item, restaurantId) => {
+    try {
+      const res = await addCartItem(item, restaurantId);
+      set({ cartItems: res.data.items || [] });
+    } catch (err) {
+      set({ error: err.message });
+    }
   },
 
-  clearCart: () => set({ cartItems: [] }),
-
-  updateQuantity: (id, quantity) => {
-    const cartItems = get().cartItems.map((item) =>
-      item._id === id ? { ...item, quantity } : item
-    );
-    set({ cartItems });
+  updateQuantity: async (id, quantity) => {
+    try {
+      const res = await updateCartItemQty(id, quantity);
+      set({ cartItems: res.data.items || [] });
+    } catch (err) {
+      set({ error: err.message });
+    }
   },
 
-  getTotalQuantity: () =>
-    get().cartItems.reduce((sum, item) => sum + item.quantity, 0),
+  removeFromCart: async (id) => {
+    try {
+      const res = await removeCartItem(id);
+      set({ cartItems: res.data.data.items || [] }); // updated from fetchCart
+    } catch (err) {
+      set({ error: err.message });
+    }
+  },
 
-  getTotalPrice: () =>
-    get().cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
+  clearCart: async (restaurantId) => {
+    try {
+      const res = await clearCartByRestaurant(restaurantId);
+      set({ cartItems: res.data.data.items || [] }); // updated from fetchCart
+    } catch (err) {
+      set({ error: err.message });
+    }
+  },
+
+  getTotalQuantity: () => get().cartItems.reduce((sum, item) => sum + item.quantity, 0),
+  getTotalPrice: () => get().cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
 }));
 
 export default useCartStore;
