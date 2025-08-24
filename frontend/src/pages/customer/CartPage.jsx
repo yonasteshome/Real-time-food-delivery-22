@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import Sidebar from "../components/Sidebar";
-import useCartStore from "../store/cartStore";
+import Sidebar from "../../components/Sidebar";
+import useCartStore from "../../store/customer/cartStore";
 import { FiTrash2, FiShoppingCart } from "react-icons/fi";
 
 const CartPage = () => {

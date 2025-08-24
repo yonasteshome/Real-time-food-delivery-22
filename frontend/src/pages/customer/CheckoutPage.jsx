@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import useCartStore from "../store/cartStore";
+import useCartStore from "../../store/customer/cartStore";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
