@@ -1,10 +1,10 @@
 // pages/MenuPage.jsx
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../../components/Sidebar";
 import { FaShoppingCart, FaSearch } from "react-icons/fa";
-import useMenuStore from "../store/menuStore";
-import useCartStore from "../store/cartStore";
+import useMenuStore from "../../store/customer/menuStore";
+import useCartStore from "../../store/customer/cartStore";
 
 const MenuPage = () => {
   const { restaurantId } = useParams();

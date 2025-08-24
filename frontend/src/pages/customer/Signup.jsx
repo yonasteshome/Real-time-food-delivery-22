@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
-import useAuthStore from "../store/authStore";
+import useAuthStore from "../../store/customer/authStore";
 
 const Signup = () => {
   const [form, setForm] = useState({

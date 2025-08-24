@@ -1,6 +1,6 @@
 // src/store/restaurantStore.js
 import { create } from "zustand";
-import { fetchNearbyRestaurants } from "../api/restaurantApi";
+import { fetchNearbyRestaurants } from "../../api/customer/restaurantApi";
 
 const useRestaurantStore = create((set) => ({
   restaurants: [],

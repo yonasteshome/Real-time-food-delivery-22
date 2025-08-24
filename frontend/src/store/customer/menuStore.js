@@ -1,6 +1,6 @@
 // src/store/menuStore.js
 import { create } from "zustand";
-import { fetchMenuByRestaurantId } from "../api/menuApi";
+import { fetchMenuByRestaurantId } from "../../api/customer/menuApi";
 
 const useMenuStore = create((set) => ({
   restaurantName: "",

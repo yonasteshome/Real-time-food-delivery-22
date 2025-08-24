@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import useStore from "../store/useStore";
+import useStore from "../../store/customer/useStore";
 
 const FeedbackPage = () => {
   const navigate = useNavigate();

@@ -1,8 +1,8 @@
 // src/pages/NearbyRestaurants.jsx
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import useRestaurantStore from "../store/restaurantStore";
-import Sidebar from "../components/Sidebar";
+import useRestaurantStore from "../../store/customer/restaurantStore";
+import Sidebar from "../../components/Sidebar";
 
 const NearbyRestaurants = () => {
   const navigate = useNavigate();

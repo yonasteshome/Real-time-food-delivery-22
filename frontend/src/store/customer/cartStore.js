@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { fetchCart, addCartItem, updateCartItemQty, removeCartItem, clearCartByRestaurant } from "../api/cartApi";
+import { fetchCart, addCartItem, updateCartItemQty, removeCartItem, clearCartByRestaurant } from "../../api/customer/cartApi";
 
 const useCartStore = create((set, get) => ({
   cartItems: [],
