@@ -2,6 +2,9 @@ require("dotenv").config();
 const express = require("express");
 const authRoutes = require("./routes/auth.Routes");
 const restaurantRoutes = require("./routes/restaurant.route");
+const orderRoutes = require("./routes/order.routes");
+
+
 const cors = require("cors");
 const connectDB = require("./config/db");
 const { connectRedis } = require("./config/redis");
@@ -12,13 +15,16 @@ const app = express();
 
 
 // Middlewares
-app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
+// app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
+app.use(cors({ origin: "*", credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 // Connect to MongoDB and Redis
-Promise.all([connectDB(), connectRedis()]).catch((err) => {
+Promise.all([connectDB(),
+  connectRedis()
+]).catch((err) => {
   logger.error(`Startup error: ${err.message}`);
   if (process.env.NODE_ENV !== "test")
     return process.exit(1); // Exit process with failure
@@ -28,6 +34,7 @@ Promise.all([connectDB(), connectRedis()]).catch((err) => {
 // API Routes
 app.use("/api/delivery/auth", authRoutes);
 app.use("/api/delivery/restaurants", restaurantRoutes);
+app.use("/api/delivery/orders", orderRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {

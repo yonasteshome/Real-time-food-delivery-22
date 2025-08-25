@@ -12,11 +12,17 @@ import NearbyRestaurants from './pages/NearbyRestaurants';
 import Sidebar from './components/Sidebar';
 import MenuPage from './pages/MenuPage';
 import CartPage from './pages/CartPage';
+import OrderDetails from './pages/OrderDetails';
+import AdminDashboard from './pages/AdminDashboard';
+import UserManagement from './pages/UserManagement';
+import RestaurantManagement from './pages/RestaurantManagement';
+import PendingRestaurants from './pages/PendingRestaurants';
 
 function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/orders/:id" element={<OrderDetails />} />
         <Route path="/" element={<Landing_Page />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
@@ -29,7 +35,15 @@ function App() {
         <Route path="/sidebar" element={<Sidebar />} />
         <Route path="/menu/:restaurantId" element={<MenuPage />} />
         <Route path="/cart" element={<CartPage />} />
-
+        
+        {/* Admin Routes */}
+        <Route path="/admin" element={<AdminDashboard />}>
+          <Route index element={<div className="p-6 bg-white rounded-lg shadow">Admin Dashboard Overview</div>} />
+          <Route path="users" element={<UserManagement />} />
+          <Route path="restaurants" element={<RestaurantManagement />} />
+          <Route path="restaurants/pending" element={<PendingRestaurants />} />
+          <Route path="settings" element={<div className="p-6 bg-white rounded-lg shadow">Admin Settings</div>} />
+        </Route>
       </Routes>
     </Router>
   );
