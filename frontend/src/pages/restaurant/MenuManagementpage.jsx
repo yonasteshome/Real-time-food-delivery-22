@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { useMenuStore } from "../store/restaurant/MenuManagementStore";
+import { useMenuManagementStore } from "../../store/restaurant/MenuManagementStore";
 
 function MenuManagement() {
   const { menuItems, fetchMenu, addMenu, deleteMenu, loading, error } =
-    useMenuStore();
+    useMenuManagementStore();
   const [form, setForm] = useState({ name: "", price: "" });
 
   useEffect(() => {

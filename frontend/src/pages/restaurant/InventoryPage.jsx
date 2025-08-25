@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useInventoryStore } from "../store/restaurant/inventoryStore";
+import { useInventoryStore } from "../../store/restaurant/inventoryStore";
 
 function Inventory() {
   const {
