@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useMenuStore } from "../store/MenuManagementStore";
+import { useMenuStore } from "../store/restaurant/MenuManagementStore";
 
 function MenuManagement() {
   const { menuItems, fetchMenu, addMenu, deleteMenu, loading, error } =
