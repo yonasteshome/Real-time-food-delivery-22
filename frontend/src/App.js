@@ -1,15 +1,16 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Login } from "./pages/Login";
-import Signup from "./pages/Signup";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
-import { Landing_Page } from "./pages/Landing Page";
+import { Login } from './pages/customer/Login';
+import Signup from "./pages/customer/Signup";
+import ForgotPassword from "./pages/customer/ForgotPassword";
+import ResetPassword from "./pages/customer/ResetPassword";
+import { Landing_Page } from "./pages/customer/Landing Page";
 import VerificationCode from "./components/VerificationCode";
-import OrderHistory from "./pages/OrderHistory";
-import FeedbackPage from "./pages/FeedBack";
-import NearbyRestaurants from "./pages/NearbyRestaurants";
+import OrderHistory from "./pages/customer/OrderHistory";
+import FeedbackPage from "./pages/customer/FeedBack";
+import NearbyRestaurants from "./pages/customer/NearbyRestaurants";
 import Sidebar from "./components/Sidebar";
+
 import MenuPage from "./pages/MenuPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
@@ -17,6 +18,11 @@ import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 import Navbar from "./components/Navbar";
 import MenuManagement from "./pages/MenuManagementpage";
 import Inventory from "./pages/InventoryPage";
+import MenuPage from "./pages/customer/MenuPage";
+import CartPage from "./pages/customer/CartPage";
+import CheckoutPage from "./pages/customer/CheckoutPage";
+import OrderConfirmationPage from "./pages/customer/OrderConfirmationPage";
+import Dashboard from "./pages/restaurant/Dashboard";
 
 function App() {
   return (
@@ -40,6 +46,7 @@ function App() {
             path="/order-confirmation"
             element={<OrderConfirmationPage />}
           />
+          <Route path="/dashboard" element={<Dashboard />} />
 
           {/* Restaurant Pages */}
           {/* <Navbar /> */}

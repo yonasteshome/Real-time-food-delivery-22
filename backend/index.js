@@ -1,16 +1,16 @@
 require("dotenv").config();
 const express = require("express");
 
-
 const authRoutes = require("./routes/auth.Routes");
 const restaurantRoutes = require("./routes/restaurant.route");
 
 const swaggerUi = require("swagger-ui-express");
 const swaggerFile = require("./swagger-output.json"); 
 
-const adminRoutes = require("./routes/admin.Routes");
+const adminRoutes = require("./routes/admin.routes");
 const cartRoutes = require("./routes/cart.routes");
 const orderRoutes = require("./routes/order.routes");
+
 
 
 const cors = require("cors");
@@ -22,7 +22,8 @@ const cookieParser = require("cookie-parser");
 const app = express();
 
 // Middlewares
-app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
+app.use(cors({ origin: "*", credentials: true }));
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
@@ -38,14 +39,16 @@ Promise.all([connectDB(), connectRedis()]).catch((err) => {
 
 // API Routes
 app.use("/api/delivery/auth", authRoutes);
-app.use("/api/delivery/restaurants", restaurantRoutes);
 app.use("/api/delivery/admin", adminRoutes);
 app.use("/api/delivery/customer", cartRoutes);
+
+app.use("/api/delivery/restaurants", restaurantRoutes);
+
 app.use("/api/delivery/orders", orderRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {
-  logger.error("err.message");
+  logger.error(err.message);
   res.status(500).json({ message: err.message });
 });
 

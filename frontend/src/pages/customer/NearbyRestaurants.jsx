@@ -1,22 +1,13 @@
 // src/pages/NearbyRestaurants.jsx
-
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import useRestaurantStore from "../store/restaurantStore";
-import Sidebar from "../components/Sidebar";
+import useRestaurantStore from "../../store/customer/restaurantStore";
+import Sidebar from "../../components/Sidebar";
 
 const NearbyRestaurants = () => {
   const navigate = useNavigate();
-
-  const {
-    restaurants,
-    filters,
-    activeFilter,
-    loading,
-    error,
-    fetchRestaurants,
-    setActiveFilter,
-  } = useRestaurantStore();
+  const { restaurants, filters, activeFilter, loading, error, fetchRestaurants, setActiveFilter } =
+    useRestaurantStore();
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -30,9 +21,7 @@ const NearbyRestaurants = () => {
     );
   }, [fetchRestaurants]);
 
-  const filteredRestaurants = restaurants.filter(
-    (r) => r.type === activeFilter
-  );
+  const filteredRestaurants = restaurants.filter((r) => r.type === activeFilter);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -81,7 +70,6 @@ const NearbyRestaurants = () => {
                 key={restaurant._id}
                 className="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col h-[296px]"
               >
-                {/* Image takes 75% of the height */}
                 <div className="h-[64%] w-full">
                   <img
                     src={restaurant.image || "/placeholder.png"}
@@ -89,31 +77,23 @@ const NearbyRestaurants = () => {
                     className="w-full h-full object-cover"
                   />
                 </div>
-
-                {/* Text section - 25% */}
                 <div className="h-[25%] px-4 py-2 flex flex-col justify-between text-sm">
                   <div className="space-y-0.5">
                     <h2 className="text-lg font-semibold text-red-600 truncate">
                       {restaurant.name}
                     </h2>
-                    <p className="text-xs text-gray-500 truncate">
-                      {restaurant.type}
-                    </p>
+                    <p className="text-xs text-gray-500 truncate">{restaurant.type}</p>
                     <div className="flex justify-between items-center text-xs">
                       <div className="text-yellow-500">
                         {"⭐".repeat(Math.floor(restaurant.rating || 4))}
                       </div>
                       <span className="text-gray-500">
-                        {restaurant.distance
-                          ? `${(restaurant.distance / 1000).toFixed(2)} km`
-                          : "N/A"}
+                        {restaurant.distance ? `${(restaurant.distance / 1000).toFixed(2)} km` : "N/A"}
                       </span>
                     </div>
                   </div>
                   <div className="flex justify-between items-center space-y-2">
-                    <span className="text-xs text-gray-600">
-                      {restaurant.timeEstimate || "20-30 min"}
-                    </span>
+                    <span className="text-xs text-gray-600">{restaurant.timeEstimate || "20-30 min"}</span>
                     <button
                       onClick={() => navigate(`/menu/${restaurant._id}`)}
                       className="px-3 py-1 bg-red-500 text-white text-xs rounded-full hover:bg-red-600"

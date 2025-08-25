@@ -2,7 +2,39 @@ const mongoose = require("mongoose");
 const Joi = require("joi");
 const Restaurant = require("../models/Restaurant");
 const User = require("../models/Users");
+const Order = require("../models/Order");
 const logger = require("../utils/logger");
+
+const getAllRestaurants = async (req, res) => {
+  try {
+    const restaurants = await Restaurant.find();
+    res.status(200).json({ restaurants });
+  } catch (err) {
+    logger.err(`Error fetching restaurants: ${err.message}`);
+    res.status(500).json({ message: "Error fetching users", err });
+  }
+};
+
+const getPlatformStats = async (req, res) => {
+  try {
+    const totalUsers = await User.countDocuments();
+    const totalRestaurants = await Restaurant.countDocuments();
+    const totalOrders = await Order.countDocuments();
+
+    const revenue = await Order.aggregate([
+      { $group: { _id: null, totalRevenue: { $sum: "$totalPrice" } } },
+    ]);
+
+    res.status(200).json({
+      totalUsers,
+      totalRestaurants,
+      totalOrders,
+      totalRevenue: revenue[0]?.totalRevenue || 0,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching stats", err });
+  }
+};
 
 // Admin: Get pending restaurants
 const pendingRestaurant = async (req, res) => {
@@ -109,4 +141,6 @@ module.exports = {
   verifyRestaurant,
   rejectRestaurant,
   getUserByRoles,
+  getAllRestaurants,
+  getPlatformStats,
 };
