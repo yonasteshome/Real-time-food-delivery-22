@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Login } from './pages/customer/Login';
+import { Login } from "./pages/customer/Login";
 import Signup from "./pages/customer/Signup";
 import ForgotPassword from "./pages/customer/ForgotPassword";
 import ResetPassword from "./pages/customer/ResetPassword";
@@ -16,8 +16,8 @@ import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 import Navbar from "./components/Navbar";
-import MenuManagement from "./pages/MenuManagementpage";
-import Inventory from "./pages/InventoryPage";
+import MenuManagement from "./pages/restaurant/MenuManagementpage";
+import Inventory from "./pages/restaurant/InventoryPage";
 import MenuPage from "./pages/customer/MenuPage";
 import CartPage from "./pages/customer/CartPage";
 import CheckoutPage from "./pages/customer/CheckoutPage";
@@ -46,10 +46,10 @@ function App() {
             path="/order-confirmation"
             element={<OrderConfirmationPage />}
           />
-          <Route path="/dashboard" element={<Dashboard />} />
 
           {/* Restaurant Pages */}
           {/* <Navbar /> */}
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/menu/:restaurantId" element={<MenuManagement />} />
           <Route path="/inventory/:restaurantId" element={<Inventory />} />
         </Routes>
