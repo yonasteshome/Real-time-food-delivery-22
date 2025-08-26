@@ -12,6 +12,7 @@ const {
   getMenuItem,
   updateInventory,
   registerRestaurant,
+  restaurantStats
 } = require("../controllers/restaurant.controller");
 
 router.post("/register", registerRestaurant);
@@ -24,6 +25,7 @@ router.delete("/:restaurantId/menu/:itemId", protect, restrictTo('restaurant', '
 router.put("/:restaurantId/menu/:itemId", protect, restrictTo('restaurant'), updateMenuItem);
 router.get("/:restaurantId/menu", protect, getMenus);
 router.get("/:restaurantId/menu/:itemId", protect, getMenuItem);
-router.put("/:restaurantId/inventory", protect, restrictTo('restaurant'), updateInventory); 
+router.put("/:restaurantId/inventory", protect, restrictTo('restaurant'), updateInventory);
+router.get("/:restaurantId/stats", protect, restrictTo('restaurant', 'admin'), restaurantStats);
 
 module.exports = router;

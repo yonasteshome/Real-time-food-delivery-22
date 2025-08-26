@@ -113,3 +113,30 @@ exports.getOrderHistory = async (req, res) => {
     logger.error(`Error fetching orders: ${err.message}`);
   }
 };
+
+exports.changeOrderStatus = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    const validStatuses = ["pending", "accepted", "preparing", "ready", "delivered", "cancelled"];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+
+    const order = await Order.findOne({ _id: orderId, restaurantId: req.user._id });
+    if (!order) {
+      return res.status(404).json({ message: "Order not found or unauthorized" });
+    }
+
+    order.status = status;
+    await order.save();
+
+    // socket later
+
+    res.status(200).json({ message: "Order status updated", data: order });
+  } catch (err) {
+    logger.error(`Error changing order status: ${err.message}`);
+    res.status(500).json({ message: "Server error" });
+  }
+}
