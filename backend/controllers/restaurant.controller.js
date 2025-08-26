@@ -188,12 +188,31 @@ const updateInventory = async (req, res) => {
   }
 };
 
+const restaurantStats = async (req, res) => {
+  try {
+    const restaurantId = req.params.restaurantId;
+    const totalOrders = await Order.countDocuments({ restaurantId });
+    const totalRevenue = await Order.aggregate([
+      { $match: { restaurantId } },
+      { $group: { _id: null, total: { $sum: "$total" } } },
+    ]);
+
+    res.status(200).json({
+      totalOrders,
+      totalRevenue: totalRevenue[0]?.total || 0,
+    });
+  } catch (err) {
+    logger.error("Failed to fetch restaurant stats:", err);
+    res.status(500).json({ error: "Failed to fetch restaurant stats" });
+  }
+};
 
 module.exports = {
   getAllRestaurants,
   getRestaurantById,
   getMenus,
   getMenuItem,
+  restaurantStats,
   addMenuItem,
   deleteMenuItem,
   updateMenuItem,
