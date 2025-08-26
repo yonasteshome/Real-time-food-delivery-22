@@ -87,14 +87,14 @@ exports.getOrderHistory = async (req, res) => {
 
     let query = {};
     if (role === "customer") query.customerId = userID;
-    if (role === "admin") query.customerId = userID;
     else if (role === "restaurant") query.restaurantId = userID;
 
     const orders = await Order.find(query)
-      .select("__v")
+      .select(
+        "customerId restaurantId items total status deliveryLocation paymentMethod createdAt updatedAt"
+      )
       .populate("customerId", "email")
       .populate("restaurantId", "email")
-      .populate("status")
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
