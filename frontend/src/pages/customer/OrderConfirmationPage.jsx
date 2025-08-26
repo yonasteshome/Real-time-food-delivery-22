@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import useCartStore from "../store/cartStore";
+import useCartStore from "../../store/customer/cartStore";
 
 const currency = (n) => (typeof n === "number" ? n.toFixed(2) : n);
 

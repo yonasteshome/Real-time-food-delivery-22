@@ -1,7 +1,7 @@
-import React from "react";
-import Sidebar from "../components/Sidebar";
-import useCartStore from "../store/cartStore";
-import { FiTrash2, FiEdit, FiShoppingCart } from "react-icons/fi";
+import React, { useEffect } from "react";
+import Sidebar from "../../components/Sidebar";
+import useCartStore from "../../store/customer/cartStore";
+import { FiTrash2, FiShoppingCart } from "react-icons/fi";
 
 const CartPage = () => {
   const {
@@ -10,7 +10,13 @@ const CartPage = () => {
     updateQuantity,
     getTotalPrice,
     clearCart,
+    loadCart,
   } = useCartStore();
+
+  // 🔥 fetch cart on mount so refresh keeps data
+  useEffect(() => {
+    loadCart();
+  }, [loadCart]);
 
   const handleDecrease = (id, qty) => {
     if (qty > 1) updateQuantity(id, qty - 1);
@@ -63,13 +69,10 @@ const CartPage = () => {
 
                   {/* Info & Quantity */}
                   <div className="flex flex-col flex-grow min-w-0">
-                    {/* Name and description */}
                     <h2 className="font-semibold text-md truncate">{item.name}</h2>
                     {item.description && (
                       <p className="text-gray-500 text-xs truncate">{item.description}</p>
                     )}
-
-                    {/* Quantity controls - lowered and centered */}
                     <div className="flex justify-start items-center space-x-2 mt-2">
                       <button
                         onClick={() => handleDecrease(item._id, item.quantity)}
@@ -98,28 +101,25 @@ const CartPage = () => {
                     </div>
                   </div>
 
-                  {/* Price and actions - fixed to top-right */}
+                  {/* Price & Remove */}
                   <div className="flex flex-col items-end ml-4 absolute right-5 top-4">
                     <p className="text-red-600 font-bold text-sm">
                       ${(item.price * item.quantity).toFixed(2)}
                     </p>
-                    <div className="flex flex-col space-y-1 mt-2">
-                      
-                      <button
-                        onClick={() => removeFromCart(item._id)}
-                        className="text-red-600 hover:text-red-700"
-                        aria-label="Remove item"
-                      >
-                        <FiTrash2 size={16} />
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => removeFromCart(item._id)}
+                      className="text-red-600 hover:text-red-700 mt-2"
+                      aria-label="Remove item"
+                    >
+                      <FiTrash2 size={16} />
+                    </button>
                   </div>
                 </div>
               ))
             )}
           </section>
 
-          {/* Order Summary - FIXED to right side */}
+          {/* Order Summary */}
           <aside
             className="w-full lg:w-80 bg-white border rounded-lg p-6 shadow-md h-fit self-start"
             style={{
@@ -157,7 +157,7 @@ const CartPage = () => {
             </button>
             {cartItems.length > 0 && (
               <button
-                onClick={clearCart}
+                onClick={() => clearCart()}
                 className="mt-3 w-full text-red-600 hover:text-red-700 font-semibold text-sm underline"
               >
                 Clear Cart

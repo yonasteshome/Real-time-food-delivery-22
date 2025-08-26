@@ -12,6 +12,7 @@ const cartRoutes = require("./routes/cart.routes");
 const orderRoutes = require("./routes/order.routes");
 
 
+
 const cors = require("cors");
 const connectDB = require("./config/db");
 const { connectRedis } = require("./config/redis");
@@ -21,7 +22,8 @@ const cookieParser = require("cookie-parser");
 const app = express();
 
 // Middlewares
-app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
+app.use(cors({ origin: "*", credentials: true }));
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
