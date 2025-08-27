@@ -6,8 +6,15 @@ import Sidebar from "../../components/Sidebar";
 
 const NearbyRestaurants = () => {
   const navigate = useNavigate();
-  const { restaurants, filters, activeFilter, loading, error, fetchRestaurants, setActiveFilter } =
-    useRestaurantStore();
+  const {
+    restaurants,
+    filters,
+    activeFilter,
+    loading,
+    error,
+    fetchRestaurants,
+    setActiveFilter,
+  } = useRestaurantStore();
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -21,7 +28,10 @@ const NearbyRestaurants = () => {
     );
   }, [fetchRestaurants]);
 
-  const filteredRestaurants = restaurants.filter((r) => r.type === activeFilter);
+  const filteredRestaurants =
+    activeFilter === "All"
+      ? restaurants
+      : restaurants.filter((r) => r.type === activeFilter);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -82,18 +92,24 @@ const NearbyRestaurants = () => {
                     <h2 className="text-lg font-semibold text-red-600 truncate">
                       {restaurant.name}
                     </h2>
-                    <p className="text-xs text-gray-500 truncate">{restaurant.type}</p>
+                    <p className="text-xs text-gray-500 truncate">
+                      {restaurant.type}
+                    </p>
                     <div className="flex justify-between items-center text-xs">
                       <div className="text-yellow-500">
                         {"⭐".repeat(Math.floor(restaurant.rating || 4))}
                       </div>
                       <span className="text-gray-500">
-                        {restaurant.distance ? `${(restaurant.distance / 1000).toFixed(2)} km` : "N/A"}
+                        {restaurant.distance
+                          ? `${(restaurant.distance / 1000).toFixed(2)} km`
+                          : "N/A"}
                       </span>
                     </div>
                   </div>
                   <div className="flex justify-between items-center space-y-2">
-                    <span className="text-xs text-gray-600">{restaurant.timeEstimate || "20-30 min"}</span>
+                    <span className="text-xs text-gray-600">
+                      {restaurant.timeEstimate || "20-30 min"}
+                    </span>
                     <button
                       onClick={() => navigate(`/menu/${restaurant._id}`)}
                       className="px-3 py-1 bg-red-500 text-white text-xs rounded-full hover:bg-red-600"

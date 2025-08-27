@@ -5,7 +5,7 @@ import { fetchNearbyRestaurants } from "../../api/customer/restaurantApi";
 const useRestaurantStore = create((set) => ({
   restaurants: [],
   filters: [],
-  activeFilter: "",
+  activeFilter: "All",
   loading: false,
   error: null,
 
@@ -15,12 +15,13 @@ const useRestaurantStore = create((set) => ({
     try {
       const data = await fetchNearbyRestaurants(lat, lng);
 
-      const uniqueTypes = [...new Set(data.map((r) => r.type).filter(Boolean))].sort();
+      const uniqueTypes = [
+        ...new Set(data.map((r) => r.type).filter(Boolean)),
+      ].sort();
 
       set({
         restaurants: data,
-        filters: uniqueTypes,
-        activeFilter: uniqueTypes[0] || "",
+        filters: ["All", ...uniqueTypes],
         loading: false,
       });
     } catch (err) {

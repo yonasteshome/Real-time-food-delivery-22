@@ -15,55 +15,76 @@ const OrderConfirmationPage = () => {
     navigate("/feedback");
   };
 
-  const handleSkipFeedback = () => {
+  const handleConfirmOrder = () => {
+    // This will just navigate to the tracking page without creating an order
+    // as the API is not yet ready.
+    clearCart();
     navigate("/ordertracking");
   };
 
   if (!cartItems || cartItems.length === 0)
     return (
-      <p className="text-center text-lg text-black/70 mt-10">No order found.</p>
+      <div className="relative min-h-screen bg-white flex items-center justify-center p-4 sm:p-6">
+        <div className="pointer-events-none absolute -top-10 -right-10 w-1/3 h-1/3 bg-yellow-300 rounded-full filter blur-[150px] opacity-20" />
+        <div className="pointer-events-none absolute -bottom-10 -left-10 w-1/3 h-1/3 bg-red-400 rounded-full filter blur-[150px] opacity-20" />
+
+        <div className="bg-white/60 backdrop-blur-sm border border-gray-200/80 rounded-2xl shadow-lg p-8 text-center max-w-md w-full">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-3 text-red-600">
+            No Order Found
+          </h1>
+          <p className="text-gray-600">
+            It seems you haven't placed an order yet.
+          </p>
+        </div>
+      </div>
     );
 
   return (
-    <div className="relative bg-white min-h-screen overflow-hidden">
-      <div className="pointer-events-none absolute top-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-[#FFD700] rounded-full blur-[150px] opacity-20" />
-      <div className="pointer-events-none absolute bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-[#FF0000] rounded-full blur-[150px] opacity-20" />
+    <div className="relative bg-white min-h-screen overflow-hidden py-4 sm:py-6 md:py-10 px-4 sm:px-6">
+      <div className="pointer-events-none absolute top-[-10%] right-[-10%] w-1/2 h-1/2 md:w-1/3 md:h-1/3 bg-yellow-300 rounded-full filter blur-[150px] opacity-20" />
+      <div className="pointer-events-none absolute bottom-[-10%] left-[-10%] w-1/2 h-1/2 md:w-1/3 md:h-1/3 bg-red-400 rounded-full filter blur-[150px] opacity-20" />
 
-      <div className="relative z-10 py-10 px-6">
-        <div className="max-w-2xl mx-auto group bg-black/5 backdrop-blur-sm border border-black/10 rounded-2xl shadow-lg p-6 sm:p-8 hover:bg-[#FFD700]/10 transition-all duration-300">
-          <h1 className="text-3xl sm:text-4xl font-extrabold mb-2 bg-gradient-to-r from-[#FF0000] via-[#FFD700] to-[#FF0000] bg-clip-text text-transparent">
+      <div className="relative z-10 max-w-2xl mx-auto">
+        <div className="group bg-white/60 backdrop-blur-sm border border-gray-200/80 rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 hover:bg-yellow-100/60 transition-all duration-300">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold mb-2 text-red-600">
             Order Confirmed! 🎉
           </h1>
-          <p className="text-black/70 mb-6">
+          <p className="text-gray-600 mb-6 text-sm sm:text-base">
             Your delicious order is on its way!
           </p>
 
-          <div className="mb-6 space-y-2">
-            <p className="text-black">
-              <span className="font-semibold text-black">
+          <div className="mb-6 space-y-3 text-sm sm:text-base">
+            <p className="text-gray-800">
+              <span className="font-semibold text-gray-800">
                 Delivery Address:
               </span>{" "}
-              <span className="text-black/80">{address || "—"}</span>
+              <span className="text-gray-700 break-words">
+                {address || "—"}
+              </span>
             </p>
-            <p className="text-black">
-              <span className="font-semibold text-black">Payment Method:</span>{" "}
-              <span className="text-black/80">{paymentMethod || "—"}</span>
+            <p className="text-gray-800">
+              <span className="font-semibold text-gray-800">
+                Payment Method:
+              </span>{" "}
+              <span className="text-gray-700 capitalize">
+                {paymentMethod || "—"}
+              </span>
             </p>
           </div>
 
           <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-3 text-[#FF0000]">
+            <h2 className="text-lg sm:text-xl font-semibold mb-3 text-red-600">
               Order Summary
             </h2>
-            <ul className="space-y-2">
+            <ul className="space-y-2 text-sm sm:text-base">
               {cartItems.map((item) => (
                 <li
                   key={item._id}
-                  className="flex justify-between items-center border-b border-black/10 pb-2 text-black"
+                  className="flex justify-between items-center border-b border-gray-200/80 pb-2 text-gray-800"
                 >
-                  <span className="text-black/80">
+                  <span className="text-gray-700">
                     {item.name}{" "}
-                    <span className="text-black/60">× {item.quantity}</span>
+                    <span className="text-gray-500">× {item.quantity}</span>
                   </span>
                   <span className="font-medium">
                     ${currency(item.price * item.quantity)}
@@ -71,27 +92,30 @@ const OrderConfirmationPage = () => {
                 </li>
               ))}
             </ul>
-            <p className="mt-4 text-lg font-extrabold">
-              Total:{" "}
-              <span className="bg-gradient-to-r from-[#FF0000] to-[#FFD700] text-transparent bg-clip-text">
-                ${currency(total)}
-              </span>
+            <p className="mt-4 text-base sm:text-lg font-extrabold text-gray-800 flex justify-between items-center">
+              <span>Total:</span>
+              <span className="text-red-600">${currency(total)}</span>
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="mt-6 text-center">
             <button
-              onClick={handleFeedback}
-              className="flex-1 inline-flex items-center justify-center font-semibold py-3 rounded-xl shadow-md transition-all duration-200 bg-gradient-to-r from-[#FF0000] to-[#FFD700] hover:from-[#FFD700] hover:to-[#FF0000] text-black"
+              onClick={handleConfirmOrder}
+              className="w-full max-w-xs mx-auto inline-flex items-center justify-center font-semibold py-3 rounded-xl shadow-md transition-all duration-300 bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-500/40 active:scale-[0.98]"
             >
-              Go to Feedback
+              Confirm Order
             </button>
-            <button
-              onClick={handleSkipFeedback}
-              className="flex-1 inline-flex items-center justify-center font-semibold py-3 rounded-xl shadow-md transition-colors duration-200 bg-black/5 border border-black/10 text-black hover:bg-[#FF0000] hover:text-white"
-            >
-              Skip Feedback
-            </button>
+            <p className="mt-4 text-sm">
+              <span className="text-gray-600">
+                Want to rate your experience?{" "}
+              </span>
+              <button
+                onClick={handleFeedback}
+                className="text-red-600 hover:underline font-semibold"
+              >
+                Leave a feedback
+              </button>
+            </p>
           </div>
         </div>
       </div>

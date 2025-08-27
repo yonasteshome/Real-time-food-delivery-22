@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import useCartStore from "../../store/customer/cartStore";
 import { FiTrash2, FiShoppingCart } from "react-icons/fi";
 
 const CartPage = () => {
+  const navigate = useNavigate();
   const {
     cartItems,
     removeFromCart,
@@ -69,9 +71,13 @@ const CartPage = () => {
 
                   {/* Info & Quantity */}
                   <div className="flex flex-col flex-grow min-w-0">
-                    <h2 className="font-semibold text-md truncate">{item.name}</h2>
+                    <h2 className="font-semibold text-md truncate">
+                      {item.name}
+                    </h2>
                     {item.description && (
-                      <p className="text-gray-500 text-xs truncate">{item.description}</p>
+                      <p className="text-gray-500 text-xs truncate">
+                        {item.description}
+                      </p>
                     )}
                     <div className="flex justify-start items-center space-x-2 mt-2">
                       <button
@@ -150,7 +156,7 @@ const CartPage = () => {
               <span>${total.toFixed(2)}</span>
             </div>
             <button
-              onClick={() => alert("Proceeding to checkout...")}
+              onClick={() => navigate("/checkout")}
               className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg"
             >
               Checkout
