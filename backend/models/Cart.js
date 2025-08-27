@@ -12,7 +12,6 @@ const cartSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "User",
     required: true,
-    unique: true,
   },
   restaurantId: {
     type: mongoose.Schema.ObjectId,
@@ -28,7 +27,7 @@ const cartSchema = new mongoose.Schema({
 cartSchema.index({ customerId: 1, restaurantId: 1 });
 
 cartSchema.pre("save", function (next) {
-  this.updateAt = Date.now();
+  this.updatedAt = Date.now();
   next();
 });
 

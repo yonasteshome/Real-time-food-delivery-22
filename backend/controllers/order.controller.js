@@ -82,19 +82,19 @@ exports.getOrderHistory = async (req, res) => {
 
     const { page, limit } = value;
     const skip = (page - 1) * limit;
-    // const userID = req.user.id;
-    // const role = req.user.role;
+    const userID = req.user.id;
+    const role = req.user.role;
 
     let query = {};
-    // if (role === "customer") query.customerId = userID;
-    // if (role === "admin") query.customerId = userID;
-    // else if (role === "restaurant") query.restaurantId = userID;
+    if (role === "customer") query.customerId = userID;
+    else if (role === "restaurant") query.restaurantId = userID;
 
     const orders = await Order.find(query)
-      .select("__v")
-      .populate("customerId", "email phone")
-      .populate("restaurantId", "email name location menu")
-      .populate("status")
+      .select(
+        "customerId restaurantId items total status deliveryLocation paymentMethod createdAt updatedAt"
+      )
+      .populate("customerId", "email")
+      .populate("restaurantId", "email")
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -113,3 +113,30 @@ exports.getOrderHistory = async (req, res) => {
     logger.error(`Error fetching orders: ${err.message}`);
   }
 };
+
+exports.changeOrderStatus = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    const validStatuses = ["pending", "accepted", "preparing", "ready", "delivered", "cancelled"];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+
+    const order = await Order.findOne({ _id: orderId, restaurantId: req.user._id });
+    if (!order) {
+      return res.status(404).json({ message: "Order not found or unauthorized" });
+    }
+
+    order.status = status;
+    await order.save();
+
+    // socket later
+
+    res.status(200).json({ message: "Order status updated", data: order });
+  } catch (err) {
+    logger.error(`Error changing order status: ${err.message}`);
+    res.status(500).json({ message: "Server error" });
+  }
+}

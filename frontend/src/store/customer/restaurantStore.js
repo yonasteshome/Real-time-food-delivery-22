@@ -1,12 +1,11 @@
 // src/store/restaurantStore.js
-
 import { create } from "zustand";
-import { fetchNearbyRestaurants } from "../api/restaurantApi";
+import { fetchNearbyRestaurants } from "../../api/customer/restaurantApi";
 
 const useRestaurantStore = create((set) => ({
   restaurants: [],
   filters: [],
-  activeFilter: "",
+  activeFilter: "All",
   loading: false,
   error: null,
 
@@ -22,8 +21,7 @@ const useRestaurantStore = create((set) => ({
 
       set({
         restaurants: data,
-        filters: uniqueTypes,
-        activeFilter: uniqueTypes[0] || "",
+        filters: ["All", ...uniqueTypes],
         loading: false,
       });
     } catch (err) {

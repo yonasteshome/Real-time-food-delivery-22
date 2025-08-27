@@ -1,9 +1,10 @@
+// pages/MenuPage.jsx
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../../components/Sidebar";
 import { FaShoppingCart, FaSearch } from "react-icons/fa";
-import useMenuStore from "../store/menuStore";
-import useCartStore from "../store/cartStore";
+import useMenuStore from "../../store/customer/menuStore";
+import useCartStore from "../../store/customer/cartStore";
 
 const MenuPage = () => {
   const { restaurantId } = useParams();
@@ -19,18 +20,17 @@ const MenuPage = () => {
     setPromoTopOffset,
   } = useMenuStore();
 
-  const {
-    addToCart,
-    getTotalQuantity,
-  } = useCartStore();
+  const { addToCart, getTotalQuantity, loadCart } = useCartStore();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("");
   const categoriesRef = useRef(null);
 
+  // Fetch menu and cart on mount
   useEffect(() => {
     fetchMenu(restaurantId);
-  }, [restaurantId, fetchMenu]);
+    loadCart(); // load full cart from backend for cart icon
+  }, [restaurantId, fetchMenu, loadCart]);
 
   useEffect(() => {
     if (categoriesRef.current) {
@@ -38,7 +38,6 @@ const MenuPage = () => {
     }
   }, [loading, menuItems, setPromoTopOffset]);
 
-  // Set initial category based on current time
   useEffect(() => {
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 11) setActiveCategory("BreakFast");
@@ -53,6 +52,16 @@ const MenuPage = () => {
 
   const totalCartQuantity = getTotalQuantity();
 
+  // Handle adding item to cart and refreshing store
+  const handleAddToCart = async (item) => {
+    try {
+      await addToCart(item, restaurantId); // add to backend
+      await loadCart(); // reload full cart
+    } catch (err) {
+      console.error("Error adding to cart:", err);
+    }
+  };
+
   return (
     <div className="flex bg-white min-h-screen font-sans bg-gray-100 relative">
       {/* Sidebar */}
@@ -62,14 +71,13 @@ const MenuPage = () => {
 
       {/* Main Content */}
       <div className="flex-1 p-6" style={{ marginRight: "320px" }}>
-        {/* Header with name and search */}
+        {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
           <div>
             <h1 className="text-3xl font-bold text-black">{restaurantName}</h1>
             <p className="text-sm text-gray-500 mt-1">{new Date().toDateString()}</p>
           </div>
 
-          {/* Search bar */}
           <div className="relative w-full md:w-1/3">
             <FaSearch className="absolute top-3 left-3 text-gray-400" />
             <input
@@ -108,7 +116,7 @@ const MenuPage = () => {
               <div
                 key={item._id}
                 className="bg-white rounded-xl shadow-md hover:shadow-lg transition cursor-pointer overflow-hidden"
-                onClick={() => addToCart(item)}
+                onClick={() => handleAddToCart(item)}
               >
                 <img
                   src={item.image || "/images/default-food.jpg"}

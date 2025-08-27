@@ -3,7 +3,8 @@ const logger = require("./logger");
 
 const sendOTP = async (phone) => {
   try {
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    // const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const code = "000000";
     const verificationCode = `${phone}-${code}`;
     const response = {
       data: {

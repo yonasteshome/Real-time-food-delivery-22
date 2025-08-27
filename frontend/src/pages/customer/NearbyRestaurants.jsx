@@ -1,13 +1,11 @@
 // src/pages/NearbyRestaurants.jsx
-
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import useRestaurantStore from "../store/restaurantStore";
-import Sidebar from "../components/Sidebar";
+import useRestaurantStore from "../../store/customer/restaurantStore";
+import Sidebar from "../../components/Sidebar";
 
 const NearbyRestaurants = () => {
   const navigate = useNavigate();
-
   const {
     restaurants,
     filters,
@@ -30,9 +28,10 @@ const NearbyRestaurants = () => {
     );
   }, [fetchRestaurants]);
 
-  const filteredRestaurants = restaurants.filter(
-    (r) => r.type === activeFilter
-  );
+  const filteredRestaurants =
+    activeFilter === "All"
+      ? restaurants
+      : restaurants.filter((r) => r.type === activeFilter);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -81,7 +80,6 @@ const NearbyRestaurants = () => {
                 key={restaurant._id}
                 className="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col h-[296px]"
               >
-                {/* Image takes 75% of the height */}
                 <div className="h-[64%] w-full">
                   <img
                     src={restaurant.image || "/placeholder.png"}
@@ -89,8 +87,6 @@ const NearbyRestaurants = () => {
                     className="w-full h-full object-cover"
                   />
                 </div>
-
-                {/* Text section - 25% */}
                 <div className="h-[25%] px-4 py-2 flex flex-col justify-between text-sm">
                   <div className="space-y-0.5">
                     <h2 className="text-lg font-semibold text-red-600 truncate">
