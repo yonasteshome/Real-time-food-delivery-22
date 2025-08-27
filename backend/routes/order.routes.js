@@ -2,9 +2,13 @@ const express = require("express");
 const {
   createOrder,
   getOrderHistory,
-  changeOrderStatus
+  changeOrderStatus,
+  storeFeedback,
 } = require("../controllers/order.controller");
-const { validateCreateOrder } = require("../validators/orderValidator");
+const {
+  validateCreateOrder,
+  validateFeedback,
+} = require("../validators/orderValidator");
 const protect = require("../middlewares/auth.middleware.js");
 const restrictTo = require("../middlewares/restrictTo");
 
@@ -28,5 +32,12 @@ router.post(
   protect,
   restrictTo("restaurant", "admin"),
   changeOrderStatus
+);
+router.post(
+  "/:id/feedback",
+  protect,
+  restrictTo("customer"),
+  validateFeedback,
+  storeFeedback
 );
 module.exports = router;
