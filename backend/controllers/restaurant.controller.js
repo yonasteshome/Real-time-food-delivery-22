@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Restaurant = require("../models/Restaurant");
 const logger = require("../utils/logger");
 const User = require("../models/Users");
-
+const {sendOTP} = require("../utils/afroMessage");
 // Helper to check ownership
 const checkOwnership = (restaurant, user) => {
   if (!restaurant.ownerId.equals(user._id)) {
@@ -127,6 +127,7 @@ const registerRestaurant = async (req, res) => {
     logger.info("Restaurant user created:", user._id);
 
     const restaurant = await Restaurant.create({ name, location, ownerId: user._id });
+    sendOTP(phone);
 
     res.status(201).json({ status: "success", data: { restaurant } });
   } catch (err) {
