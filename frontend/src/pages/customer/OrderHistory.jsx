@@ -58,13 +58,10 @@ export default function OrderHistory() {
                 <p className="text-xs text-gray-500">{order.driver.role}</p>
               </div>
             </div>
-            <div>{order.date}</div>
-            <div>{order.item}</div>
-            <div>{order.total}</div>
-            <div className="text-green-600 font-medium">{order.status}</div>
           </div>
         ))}
-      </main>
-    </div>
+        </main>
+      </div>
+    
   );
 }

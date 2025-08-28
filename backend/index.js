@@ -28,7 +28,9 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 // Connect to MongoDB and Redis
-Promise.all([connectDB(), connectRedis()]).catch((err) => {
+Promise.all([connectDB(),
+  connectRedis()
+]).catch((err) => {
   logger.error(`Startup error: ${err.message}`);
   if (process.env.NODE_ENV !== "test")
     return process.exit(1); // Exit process with failure
