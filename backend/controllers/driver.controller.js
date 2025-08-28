@@ -1,6 +1,7 @@
 const User = require("../models/Users");  
 const Order = require("../models/Order");
 const logger = require("../utils/logger");
+const mongoose = require("mongoose");
 const registerDriver = async (req, res) => {
     try {
         const { email, phone, password, name, restaurantId } = req.body;
@@ -44,10 +45,8 @@ const changeDriverStatus = async (req, res) => {
        res.status(500).json({ message: error.message });
     }
 }
-const mongoose = require("mongoose");
-const mongoose = require("mongoose");
-const User = require("../models/User");
-const Order = require("../models/Order");
+
+
 
 const dailyAndTotalEarning = async (req, res) => {
   try {
