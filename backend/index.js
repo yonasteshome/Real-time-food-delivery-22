@@ -10,7 +10,7 @@ const swaggerFile = require("./swagger-output.json");
 const adminRoutes = require("./routes/admin.routes");
 const cartRoutes = require("./routes/cart.routes");
 const orderRoutes = require("./routes/order.routes");
-
+const driverRoutes = require("./routes/driver.routes");
 
 
 const cors = require("cors");
@@ -45,6 +45,8 @@ app.use("/api/delivery/customer", cartRoutes);
 app.use("/api/delivery/restaurants", restaurantRoutes);
 
 app.use("/api/delivery/orders", orderRoutes);
+
+app.use("/api/delivery/drivers", driverRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {

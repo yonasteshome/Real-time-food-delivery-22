@@ -1,5 +1,6 @@
 const express = require("express");
 const {
+  getAllUsers,
   rejectRestaurant,
   getUserByRoles,
   getAllRestaurants,
@@ -10,7 +11,8 @@ const restrictTo = require("../middlewares/restrictTo");
 
 const router = express.Router();
 
-router.get("/users", protect, restrictTo("admin"), getUserByRoles);
+router.get("/users", protect, restrictTo("admin"), getAllUsers);
+router.post("/users/roles", protect, restrictTo("admin"), getUserByRoles);
 router.patch(
   "/restaurants/:id/reject",
   protect,
