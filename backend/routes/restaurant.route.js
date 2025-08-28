@@ -1,4 +1,6 @@
 const express = require("express");
+const protect = require("../middlewares/auth.middleware");
+const restrictTo = require("../middlewares/restrictTo");
 const router = express.Router();
 const {
   getAllRestaurants,
@@ -6,13 +8,24 @@ const {
   addMenuItem,
   deleteMenuItem,
   updateMenuItem,
-  getMenu,
+  getMenus,
+  getMenuItem,
+  updateInventory,
+  registerRestaurant,
+  restaurantStats
 } = require("../controllers/restaurant.controller");
 
-router.get("/", getAllRestaurants);
-router.get("/:id", getRestaurantById);
-router.post("/:restaurantId/menu", addMenuItem);
-router.delete("/:restaurantId/menu/:itemId", deleteMenuItem);
-router.put("/:restaurantId/menu/:itemId", updateMenuItem);
-router.get("/:id/menu", getMenu);
+router.post("/register", registerRestaurant);
+
+
+router.get("/", protect, getAllRestaurants);
+router.get("/:id", protect, getRestaurantById);
+router.post("/:restaurantId/menu", protect, restrictTo('restaurant'), addMenuItem);
+router.delete("/:restaurantId/menu/:itemId", protect, restrictTo('restaurant', 'admin'), deleteMenuItem);
+router.put("/:restaurantId/menu/:itemId", protect, restrictTo('restaurant'), updateMenuItem);
+router.get("/:restaurantId/menu", protect, getMenus);
+router.get("/:restaurantId/menu/:itemId", protect, getMenuItem);
+router.put("/:restaurantId/inventory", protect, restrictTo('restaurant'), updateInventory);
+router.get("/:restaurantId/stats", protect, restrictTo('restaurant', 'admin'), restaurantStats);
+
 module.exports = router;

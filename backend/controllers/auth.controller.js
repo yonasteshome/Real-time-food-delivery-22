@@ -9,7 +9,7 @@ const { ref } = require("joi");
 
 exports.register = async (req, res) => {
   try {
-    const { email, phone, password, role, restaurantId } = req.body;
+    const { email, phone, password, restaurantId, role } = req.body;
     const userExist = await User.findOne({ $or: [{ email }, { phone }] });
     if (userExist)
       return res.status(400).json({ message: "User alreaady exists" });
@@ -18,8 +18,8 @@ exports.register = async (req, res) => {
       email,
       phone,
       password,
-      role,
       restaurantId,
+      role,
     });
 
     const { verificationCode, code } = await sendOTP(phone);
@@ -94,43 +94,62 @@ exports.verifyOTP = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, phone, password } = req.body;
-    const user = await User.findOne({ email });
+
+    // Find user by email or phone
+    let user;
+    if (email) {
+      user = await User.findOne({ email });
+    } else if (phone) {
+      user = await User.findOne({ phone });
+    }
+
+    // If no user found or password doesn't match
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    // If phone not verified, send OTP and stop login process
     if (!user.isVerified) {
       const { verificationCode, code } = await sendOTP(user.phone);
       await redisClient.setEx(
         `otp:${user.phone}`,
-        300,
+        300, // 5 minutes
         JSON.stringify({ code, verificationCode })
       );
-      return res
-        .status(403)
-        .json({ message: "Please verify your phone number first." });
+      return res.status(403).json({
+        message: "Please verify your phone number first.",
+      });
     }
 
+    // Generate tokens
     const token = generateToken(user);
-    const refreshTokenn = refreshToken(user);
+    const refreshTokenValue = refreshToken(user);
 
-    await User.updateOne({ id: user._id }, { refreshToken: refreshTokenn });
+    // Save refresh token in DB
+    await User.updateOne(
+      { _id: user._id },
+      { refreshToken: refreshTokenValue }
+    );
 
+    // Set cookies
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
     });
-    res.cookie("refreshToken", refreshTokenn, {
+    res.cookie("refreshToken", refreshTokenValue, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
     });
 
+    // Send success response
     res.status(200).json({
+      token,
       status: "success",
       data: { userId: user._id, role: user.role },
     });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    logger.error(err.message);
+    res.status(500).json({ message: err.message });
   }
 };
 
