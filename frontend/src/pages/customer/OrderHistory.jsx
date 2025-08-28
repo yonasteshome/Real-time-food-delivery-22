@@ -1,67 +1,111 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+
 import Sidebar from "../../components/Sidebar";
+import { getOrderHistory } from "../../api/customer/orderHistoryApi";
 
-const orders = new Array(6).fill({
-  driver: {
-    name: "John Snow",
-    role: "Driver",
-    image: "https://randomuser.me/api/portraits/men/75.jpg",
-  },
-  date: "July 21 2025",
-  item: "Special burger (2x)",
-  total: "$11.98",
-  status: "Successful",
-});
+const OrderHistory = () => {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-export default function OrderHistory() {
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        // Call our API utility function to fetch order history
+        const data = await getOrderHistory();
+        // Assumes your backend returns an object with data.orders, adjust accordingly.
+        setOrders(data.data.orders);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+  if (loading) return <div className="p-4">Loading...</div>;
+  if (error) return <div className="p-4 text-red-500">Error: {error}</div>;
+
   return (
-    <div className="flex min-h-screen bg-white">
-      {/* Sidebar */}
-      <aside className="w-28 bg-white border-r border-gray-200">
+    <div className="flex min-h-screen bg-gray-100">
+      <div className="w-20 sm:w-24">
         <Sidebar />
-      </aside>
+      </div>
 
-      {/* Main content */}
-      <main className="flex-1 ">
-        <div className="flex justify-between items-center mb-8 pt-6 pr-6">
-          <h1 className="text-2xl font-bold">Order History</h1>
-          <input
-            type="text"
-            placeholder="Search menu here"
-            className="px-4 py-2 border rounded-lg shadow-sm w-72"
-          />
-        </div>
-
-        {/* Table header */}
-        <div className="grid grid-cols-5 font-semibold border-b pb-3 mb-3 text-sm text-gray-700 pr-6">
-          <span>Driver Name</span>
-          <span>Date</span>
-          <span>Item</span>
-          <span>Total Price</span>
-          <span>Status</span>
-        </div>
-
-        {/* Orders list */}
-        {orders.map((order, index) => (
-          <div
-            key={index}
-            className="grid grid-cols-5 items-center py-4 border-b text-sm pr-6"
-          >
-            <div className="flex items-center gap-3">
-              <img
-                src={order.driver.image}
-                alt="driver"
-                className="w-10 h-10 rounded-full"
-              />
-              <div>
-                <p className="text-red-500 font-semibold">{order.driver.name}</p>
-                <p className="text-xs text-gray-500">{order.driver.role}</p>
-              </div>
-            </div>
+      <div className="flex-1 p-6 font-sans">
+        <main className="flex-1 p-6">
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-2xl font-bold">Order History</h1>
+            <input
+              type="text"
+              placeholder="Search menu here"
+              className="px-4 py-2 border rounded-lg shadow-sm w-72"
+            />
           </div>
-        ))}
+
+          <div className="grid grid-cols-5 font-semibold border-b pb-3 mb-3 text-sm text-gray-700">
+            <span>Driver Name</span>
+            <span>Date</span>
+            <span>Item</span>
+            <span>Total Price</span>
+            <span>Status</span>
+          </div>
+
+          {orders.length === 0 ? (
+            <p>No orders found.</p>
+          ) : (
+            orders.map((order) => (
+              <Link
+                to={`/orders/${order._id}`}
+                key={order._id}
+                className="block"
+              >
+                <div className="grid grid-cols-5 items-center py-4 border-b text-sm">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={
+                        order.driver?.image || "https://via.placeholder.com/40"
+                      }
+                      alt="driver"
+                      className="w-10 h-10 rounded-full"
+                    />
+                    <div>
+                      <p className="text-red-500 font-semibold">
+                        {order.driver?.name || "Unknown Driver"}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {order.driver?.role || "Driver"}
+                      </p>
+                    </div>
+                  </div>
+                  <div>{new Date(order.createdAt).toLocaleDateString()}</div>
+                  <div>
+                    {order.items && order.items.length > 0
+                      ? order.items.map((i) => i.name).join(", ")
+                      : "No items"}
+                  </div>
+                  <div>${order.total}</div>
+                  <div
+                    className={
+                      order.status === "pending"
+                        ? "text-yellow-600 font-medium"
+                        : "text-green-600 font-medium"
+                    }
+                  >
+                    {order.status}
+                  </div>
+                </div>
+              </Link>
+            ))
+          )}
         </main>
       </div>
-    
+    </div>
   );
-}
+};
+
+export default OrderHistory;
