@@ -26,8 +26,8 @@ const createOrderSchema = Joi.object({
 });
 
 const feedbackSchema = Joi.object({
-  rating: Joi.number().integer().min(1).mmatch(5).required().messages({
-    "numbers.base": "Rating must be a number",
+  rating: Joi.number().integer().min(1).max(5).required().messages({
+    "number.base": "Rating must be a number",
     "number.integer": "Rating must be an integer",
     "number.min": "Rating must be at least 1",
     "number.max": "Rating must not exceed 5",

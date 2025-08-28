@@ -153,7 +153,7 @@ exports.changeOrderStatus = async (req, res) => {
   }
 };
 
-exports.storeFeedback = async (res, res) => {
+exports.storeFeedback = async (req, res) => {
   try {
     const { id } = req.params;
     const { rating, comment } = req.body;
