@@ -158,7 +158,7 @@ exports.storeFeedback = async (req, res) => {
     const { id } = req.params;
     const { rating, comment } = req.body;
     const order = await Order.findById(id);
-    if (!order) return res.status(404).json({ message: "Order not dound" });
+    if (!order) return res.status(404).json({ message: "Order not found" });
 
     if (order.customerId.toString() !== req.user._id.toString()) {
       throw new Error(

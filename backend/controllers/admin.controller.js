@@ -98,7 +98,17 @@ const rejectRestaurant = async (req, res) => {
     logger.error("Error verifying restaurant", err.message);
   }
 };
+const getAllUsers = async (req , res) => {
+  try {
+    const user = await User.find();
+    if (!user) return res.status(404).json({message: "No user found"});
+    res.status(200).json({users: user})
 
+  } catch (error) {
+    logger.error("Error fetching users:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+}
 const getUserByRoles = async (req, res) => {
   try {
     const { error, value } = userRoleSchema.validate(req.body, {
@@ -186,6 +196,7 @@ const resolveComplaint = async (req, res) => {
 };
 
 module.exports = {
+  getAllUsers,
   pendingRestaurant,
   verifyRestaurant,
   rejectRestaurant,
