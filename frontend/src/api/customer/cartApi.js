@@ -38,8 +38,7 @@ export const removeCartItem = async (id) => {
     credentials: "include",
   });
   if (!res.ok) throw new Error("Failed to remove cart item");
-  // Fetch updated cart after removal
-  return fetchCart();
+  return res.json();
 };
 
 // Clear cart for a restaurant
@@ -49,6 +48,6 @@ export const clearCartByRestaurant = async (restaurantId) => {
     credentials: "include",
   });
   if (!res.ok) throw new Error("Failed to clear cart");
-  // Fetch updated cart after clearing
-  return fetchCart();
+  // Return an empty cart structure since the backend deletes the cart
+  return { data: { items: [], restaurantId: null } };
 };

@@ -5,6 +5,16 @@ const User = require("../models/Users");
 const Order = require("../models/Order");
 const logger = require("../utils/logger");
 
+const userRoleSchema = Joi.object({
+  role: Joi.string()
+    .valid("customer", "restaurant", "driver", "admin")
+    .optional()
+    .messages({
+      "string.valid":
+        "Role must be one of: customer, admin, restaurant, driver",
+    }),
+});
+
 const getAllRestaurants = async (req, res) => {
   try {
     const restaurants = await Restaurant.find();
@@ -63,16 +73,6 @@ const verifyRestaurant = async (req, res) => {
     res.status(500).json({ message: "Failed to verify restaurant" });
   }
 };
-
-const userRoleSchema = Joi.object({
-  role: Joi.string()
-    .valid("customer", "restaurant", "driver", "admin")
-    .optional()
-    .messages({
-      "string.valid":
-        "Role must be one of: customer, admin, restaurant, driver",
-    }),
-});
 
 const rejectRestaurant = async (req, res) => {
   try {
@@ -146,6 +146,55 @@ const getUserByRoles = async (req, res) => {
   }
 };
 
+const suspendUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.set("suspendStatus", true, { strict: false }); // // Will be added or updated suspensionStatus as a  field
+    await user.save();
+
+    res.status(200).json({ message: "success", data: user });
+  } catch (err) {
+    logger.error(`Error suspending the user: ${err.message}`);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const getComplaints = async (req, res) => {
+  try {
+    const complaints = await Order.find({
+      feedback: { $exists: true, $ne: null },
+      rating: { $lt: 3 },
+    })
+      .select("customerId restaurantId rating feedback createdAt")
+      .populate("customerId", "email")
+      .populate("restaurantId", "name");
+    if (!complaints.length) throw new Error("No complaints found");
+
+    res.status(200).json({ message: "success", data: complaints });
+  } catch (err) {
+    logger.error("Error fetching complaints:", err.message);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const resolveComplaint = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const order = await Order.findById(id);
+    if (!order) throw new Error("Order not found");
+
+    order.resolved = true; // 'resolved' will be added
+    await order.save();
+    res.status(200).json({ message: "success", data: order });
+  } catch (err) {
+    logger.error("Error resolving complaint:", err.message);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   getAllUsers,
   pendingRestaurant,
@@ -154,4 +203,7 @@ module.exports = {
   getUserByRoles,
   getAllRestaurants,
   getPlatformStats,
+  suspendUser,
+  getComplaints,
+  resolveComplaint,
 };

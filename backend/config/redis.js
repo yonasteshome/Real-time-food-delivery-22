@@ -7,6 +7,7 @@ const client = redis.createClient({
   socket: {
     reconnectStrategy: (retries) => Math.min(retries * 100, 3000),
   },
+  
 });
 
 client.on("error", (err) => {
