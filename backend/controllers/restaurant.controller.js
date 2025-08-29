@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Restaurant = require("../models/Restaurant");
 const logger = require("../utils/logger");
 const User = require("../models/Users");
+const { client: redisClient } = require("../config/redis");
 const { sendOTP } = require("../utils/afroMessage");
 // Helper to check ownership
 const checkOwnership = (restaurant, user) => {
@@ -153,6 +154,7 @@ const registerRestaurant = async (req, res) => {
       ownerId: user._id,
       image,
     });
+    const { verificationCode, code } = await sendOTP(phone);
     try {
       const result = await redisClient.setEx(
         `otp:${phone}`,
