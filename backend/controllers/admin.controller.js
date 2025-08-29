@@ -50,7 +50,10 @@ const getPlatformStats = async (req, res) => {
 const pendingRestaurant = async (req, res) => {
   try {
     const pending = await Restaurant.find({ verified: false, deleted: false });
+    if (!pending.length)
+      return res.status(404).json({ message: "No pending restaurants found" });
     res.status(200).json({ status: "success", data: { pending } });
+    console.log(`Fetched pending restaurants: ${pending.length}`);
   } catch (error) {
     logger.error("Error fetching pending restaurants:", error);
     res.status(500).json({ message: "Failed to fetch pending restaurants" });
