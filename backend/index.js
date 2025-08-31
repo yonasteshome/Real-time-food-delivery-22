@@ -12,7 +12,7 @@ const cartRoutes = require("./routes/cart.routes");
 const orderRoutes = require("./routes/order.routes");
 
 const driverRoutes = require("./routes/driver.routes");
-
+const userRoutes = require("./routes/user.routes");
 
 const cors = require("cors");
 const connectDB = require("./config/db");
@@ -54,7 +54,7 @@ app.use("/api/delivery/restaurants", restaurantRoutes);
 app.use("/api/delivery/orders", orderRoutes);
 
 app.use("/api/delivery/drivers", driverRoutes);
-
+app.use("/api/delivery/users", userRoutes);
 // Error handling
 app.use((err, req, res, next) => {
   logger.error(err.message);
