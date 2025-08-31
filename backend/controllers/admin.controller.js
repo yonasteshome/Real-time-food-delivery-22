@@ -152,11 +152,14 @@ const getUserByRoles = async (req, res) => {
 const suspendUser = async (req, res) => {
   try {
     const { id } = req.params;
+    id = id.replace(/['"]+/g, "");
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
     const user = await User.findById(id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    user.set("suspendStatus", true, { strict: false }); // // Will be added or updated suspensionStatus as a  field
-    await user.save();
+    user.set("suspendStatus", true, { strict: false }); 
 
     res.status(200).json({ message: "success", data: user });
   } catch (err) {
