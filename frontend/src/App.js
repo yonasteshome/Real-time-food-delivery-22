@@ -1,5 +1,6 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import useAuthStore from "./store/restaurant/authStore";
 
 // Customer Pages
 import { Login } from "./pages/customer/Login";
@@ -18,8 +19,12 @@ import OrderStatus from "./pages/customer/OrderStatus";
 import CheckoutPage from "./pages/customer/CheckoutPage";
 import OrderConfirmationPage from "./pages/customer/OrderConfirmationPage";
 
-// Restaurant specific pages
+// Restaurant Pages
+import RestaurantSignup from "./pages/restaurant/Signup";
+import RestaurantVerificationCode from "./components/restaurant/VerificationCode";
+import RestaurantLogin from "./pages/restaurant/Login";
 import Dashboard from "./pages/restaurant/Dashboard";
+import AddMenuItem from "./pages/restaurant/MenuManager";
 import MenuManagement from "./pages/restaurant/MenuManagementpage";
 import Inventory from "./pages/restaurant/InventoryPage";
 
@@ -30,6 +35,29 @@ import RestaurantManagement from "./pages/admin/RestaurantManagement";
 import PendingRestaurants from "./pages/admin/PendingRestaurants";
 
 function App() {
+  const { checkAuth } = useAuthStore();
+
+  // Check HTTP-only cookie auth on app load
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
+  // Protected route wrapper with loading handling
+  const PrivateRoute = ({ children, allowedRoles }) => {
+    const { isLoggedIn, role, loading } = useAuthStore();
+
+    if (loading) return (
+      <div className="flex justify-center items-center h-screen">
+        <p>Loading...</p>
+      </div>
+    );
+
+    if (!isLoggedIn) return <Navigate to="/restaurant/login" replace />;
+    if (allowedRoles && !allowedRoles.includes(role)) return <Navigate to="/" replace />;
+
+    return children;
+  };
+
   return (
     <Router>
       <div className="min-h-screen bg-white/90">
@@ -48,27 +76,79 @@ function App() {
           <Route path="/menu/:restaurantId" element={<MenuPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
-          <Route
-            path="/order-confirmation"
-            element={<OrderConfirmationPage />}
-          />
+          <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
           <Route path="/order-status" element={<OrderStatus />} />
 
           {/* Restaurant Pages */}
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/restaurant/login" element={<RestaurantLogin />} />
+          <Route path="/restaurant/signup" element={<RestaurantSignup />} />
+          <Route path="/restaurant/verify" element={<RestaurantVerificationCode />} />
+
+          <Route
+            path="/restaurant/dashboard"
+            element={
+              <PrivateRoute allowedRoles={["restaurant"]}>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/restaurant/menu"
+            element={
+              <PrivateRoute allowedRoles={["restaurant"]}>
+                <AddMenuItem />
+              </PrivateRoute>
+            }
+          />
           <Route
             path="/MenuManagement/:restaurantId"
-            element={<MenuManagement />}
+            element={
+              <PrivateRoute allowedRoles={["restaurant"]}>
+                <MenuManagement />
+              </PrivateRoute>
+            }
           />
-          <Route path="/inventory/:restaurantId" element={<Inventory />} />
+          <Route
+            path="/inventory/:restaurantId"
+            element={
+              <PrivateRoute allowedRoles={["restaurant"]}>
+                <Inventory />
+              </PrivateRoute>
+            }
+          />
 
           {/* Admin Pages */}
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/users" element={<UserManagement />} />
-          <Route path="/admin/restaurants" element={<RestaurantManagement />} />
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <AdminDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <UserManagement />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/restaurants"
+            element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <RestaurantManagement />
+              </PrivateRoute>
+            }
+          />
           <Route
             path="/admin/restaurants/pending"
-            element={<PendingRestaurants />}
+            element={
+              <PrivateRoute allowedRoles={["admin"]}>
+                <PendingRestaurants />
+              </PrivateRoute>
+            }
           />
         </Routes>
       </div>
