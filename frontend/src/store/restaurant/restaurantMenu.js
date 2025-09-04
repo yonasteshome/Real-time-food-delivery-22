@@ -40,23 +40,27 @@ const useMenuStore = create((set, get) => ({
   updateMenuItem: async (itemId, item) => {
     const restaurantId = useAuthStore.getState().restaurantId;
     if (!restaurantId) return;
-
-    // optimistically mark pending
+  
+    // Optimistically mark pending
     set((state) => ({
       menuItems: state.menuItems.map((m) =>
         m._id === itemId ? { ...m, ...item, pending: true } : m
       ),
     }));
-
+  
     try {
       const updatedItem = await updateMenuItemApi(restaurantId, itemId, item);
+  
+      // Merge API response with the existing item to avoid losing fields
       set((state) => ({
         menuItems: state.menuItems.map((m) =>
-          m._id === itemId ? updatedItem : m
+          m._id === itemId
+            ? { ...m, ...updatedItem, pending: false } // merge updated fields
+            : m
         ),
       }));
     } catch (err) {
-      // revert pending
+      // Revert pending and show error
       set((state) => ({
         menuItems: state.menuItems.map((m) =>
           m._id === itemId ? { ...m, pending: false } : m
@@ -65,6 +69,7 @@ const useMenuStore = create((set, get) => ({
       }));
     }
   },
+  
 
   deleteMenuItem: async (itemId) => {
     const restaurantId = useAuthStore.getState().restaurantId;

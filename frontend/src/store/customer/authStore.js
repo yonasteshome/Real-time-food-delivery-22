@@ -1,71 +1,56 @@
 import { create } from "zustand";
-import axios from "axios";
-
-// ✅ Axios instance with cookies enabled
-const api = axios.create({
-  baseURL: "http://localhost:5000/api/delivery",
-  withCredentials: true, // important for HttpOnly cookies
-});
+import {
+  loginApi,
+  logoutApi,
+  refreshTokenApi,
+  signupApi,
+} from "../../api/customer/authApi";
 
 const useAuthStore = create((set) => ({
   isLoggedIn: false,
   user: null,
-  pendingUser: null, // for signup verification
+  pendingUser: null,
 
-  // Login
+  // ------------------- LOGIN -------------------
   login: async (email, password) => {
-    try {
-      const response = await api.post("/auth/login", { email, password });
-
-      // ✅ Only store user info, token is in HttpOnly cookie
-      set({ isLoggedIn: true, user: response.data.data });
-      return { success: true };
-    } catch (err) {
-      return {
-        success: false,
-        message: err.response?.data?.message || err.message || "Login failed",
-      };
+    const res = await loginApi(email, password);
+    if (res.success) {
+      set({ isLoggedIn: true, user: res.data });
     }
+    return res;
   },
 
-  // Logout
+  // ------------------- LOGOUT -------------------
   logout: async () => {
-    try {
-      // Optional: backend logout endpoint to clear cookie
-      await api.post("/auth/logout");
-    } catch {}
+    await logoutApi();
     set({ isLoggedIn: false, user: null, pendingUser: null });
   },
 
-  // Check session / refresh
+  // ------------------- CHECK SESSION -------------------
   checkAuth: async () => {
-    try {
-      const res = await api.get("/auth/refresh-token");
-      set({ isLoggedIn: true, user: res.data.data });
-    } catch {
+    const res = await refreshTokenApi();
+    if (res.success) {
+      set({ isLoggedIn: true, user: res.data });
+    } else {
       set({ isLoggedIn: false, user: null });
     }
+    return res;
   },
 
-  // Signup (optional, preserves your existing pendingUser flow)
+  // ------------------- SIGNUP -------------------
   signupUser: async (email, phone, password, role) => {
-    try {
-      const response = await api.post("/auth/register", {
-        email,
-        phone,
-        password,
-        role,
-      });
+    const res = await signupApi(email, phone, password, role);
+    if (res.success) {
       set({
-        pendingUser: { id: response.data.data.userid, email, phone, role },
+        pendingUser: {
+          id: res.data.userid,
+          email,
+          phone,
+          role,
+        },
       });
-      return { success: true };
-    } catch (err) {
-      return {
-        success: false,
-        message: err.response?.data?.message || err.message || "Signup failed",
-      };
     }
+    return res;
   },
 }));
 
