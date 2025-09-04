@@ -1,53 +1,64 @@
-const BASE_URL = "http://localhost:5000/api/delivery/customer/";
+import axios from "axios";
+
+const BASE_URL = "http://localhost:5000/api/delivery/customer";
+
+const api = axios.create({
+  baseURL: BASE_URL,
+  withCredentials: true,
+});
+
+// ✅ Central error handler
+const handleError = (err, defaultMsg) =>
+  err.response?.data?.message || err.message || defaultMsg || "Something went wrong";
+
+// ---------------- CART APIS ----------------
 
 // Get cart
-export const fetchCart = async () => {
-  const res = await fetch(BASE_URL, { method: "GET", credentials: "include" });
-  if (!res.ok) throw new Error("Failed to fetch cart");
-  return res.json();
+export const fetchCartApi = async () => {
+  try {
+    const res = await api.get("/");
+    return { success: true, data: res.data.data };
+  } catch (err) {
+    return { success: false, message: handleError(err, "Failed to load cart") };
+  }
 };
 
-// Add item to cart
-export const addCartItem = async (item, restaurantId) => {
-  const res = await fetch(BASE_URL, {
-    method: "POST",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ menuItemId: item._id, quantity: 1, restaurantId }),
-  });
-  if (!res.ok) throw new Error("Failed to add item to cart");
-  return res.json();
+// Add item
+export const addToCartApi = async (restaurantId, menuItemId, quantity) => {
+  try {
+    await api.post("/", { restaurantId, menuItemId, quantity });
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: handleError(err, "Failed to add item") };
+  }
 };
 
 // Update item quantity
-export const updateCartItemQty = async (id, quantity) => {
-  const res = await fetch(`${BASE_URL}/${id}`, {
-    method: "PUT",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ quantity }),
-  });
-  if (!res.ok) throw new Error("Failed to update cart item");
-  return res.json();
+export const updateCartItemApi = async (cartId, quantity) => {
+  try {
+    await api.put(`/${cartId}`, { quantity });
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: handleError(err, "Failed to update item") };
+  }
 };
 
-// Remove single item from cart
-export const removeCartItem = async (id) => {
-  const res = await fetch(`${BASE_URL}/${id}`, {
-    method: "DELETE",
-    credentials: "include",
-  });
-  if (!res.ok) throw new Error("Failed to remove cart item");
-  return res.json();
+// Remove single item
+export const removeFromCartApi = async (cartId) => {
+  try {
+    await api.delete(`/${cartId}`);
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: handleError(err, "Failed to remove item") };
+  }
 };
 
-// Clear cart for a restaurant
-export const clearCartByRestaurant = async (restaurantId) => {
-  const res = await fetch(`${BASE_URL}/${restaurantId}`, {
-    method: "DELETE",
-    credentials: "include",
-  });
-  if (!res.ok) throw new Error("Failed to clear cart");
-  // Return an empty cart structure since the backend deletes the cart
-  return { data: { items: [], restaurantId: null } };
+// Clear all items for a restaurant
+export const clearCartApi = async (restaurantId) => {
+  try {
+    await api.delete(`/${restaurantId}`);
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: handleError(err, "Failed to clear cart") };
+  }
 };

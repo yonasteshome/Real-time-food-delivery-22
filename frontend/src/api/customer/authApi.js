@@ -5,11 +5,11 @@ const api = axios.create({
   withCredentials: true, // for HttpOnly cookies
 });
 
-// ✅ Centralized error handler
+// ✅ helper for consistent error messages
 const handleError = (err, defaultMsg) =>
   err.response?.data?.message || err.message || defaultMsg || "Something went wrong";
 
-// ------------------- AUTH APIS -------------------
+// ------------------- USER AUTH APIS -------------------
 
 // Login
 export const loginApi = async (email, password) => {
@@ -31,41 +31,26 @@ export const logoutApi = async () => {
   }
 };
 
-// Refresh session
+// Refresh / check auth
 export const refreshTokenApi = async () => {
   try {
-    const res = await api.post("/auth/refresh-token");
+    const res = await api.get("/auth/refresh-token");
     return { success: true, data: res.data.data };
   } catch (err) {
     return { success: false, message: handleError(err, "Session expired") };
   }
 };
 
-// Signup Restaurant
-export const signupRestaurantApi = async (
-  email,
-  phone,
-  password,
-  name,
-  lng,
-  lat,
-  image
-) => {
+// Signup
+export const signupApi = async (email, phone, password, role) => {
   try {
-    const payload = {
-      email: String(email),
-      phone: String(phone),
-      password: String(password),
-      name: String(name),
-      image: String(image),
-      location: {
-        type: "Point",
-        coordinates: [parseFloat(lng), parseFloat(lat)],
-      },
-    };
-
-    const res = await api.post("/restaurants/register", payload);
-    return { success: true, data: res.data.data, payload };
+    const res = await api.post("/auth/register", {
+      email,
+      phone,
+      password,
+      role,
+    });
+    return { success: true, data: res.data.data };
   } catch (err) {
     return { success: false, message: handleError(err, "Signup failed") };
   }
