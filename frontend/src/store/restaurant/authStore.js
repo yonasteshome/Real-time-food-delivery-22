@@ -12,7 +12,14 @@ const useAuthStore = create((set) => ({
   restaurantId: null,
   role: null,
   loading: true,
-  pendingUser: null,
+  pendingUser: JSON.parse(localStorage.getItem("pendingUser")) || null, // persisted
+
+  // ------------------- SET PENDING USER -------------------
+  setPendingUser: (userData) => {
+    set({ pendingUser: userData });
+    if (userData) localStorage.setItem("pendingUser", JSON.stringify(userData));
+    else localStorage.removeItem("pendingUser");
+  },
 
   // ------------------- LOGIN -------------------
   login: async (email, password) => {
@@ -43,6 +50,7 @@ const useAuthStore = create((set) => ({
       loading: false,
       pendingUser: null,
     });
+    localStorage.removeItem("pendingUser");
   },
 
   // ------------------- CHECK SESSION -------------------
@@ -82,15 +90,15 @@ const useAuthStore = create((set) => ({
       image
     );
     if (res.success) {
-      set({
-        pendingUser: {
-          id: res.data._id,
-          email: res.payload.email,
-          phone: res.payload.phone,
-          name: res.payload.name,
-          image: res.payload.image,
-        },
-      });
+      const pending = {
+        id: res.data._id,
+        email: res.payload.email,
+        phone: res.payload.phone,
+        name: res.payload.name,
+        image: res.payload.image,
+      };
+      set({ pendingUser: pending });
+      localStorage.setItem("pendingUser", JSON.stringify(pending));
     }
     return res;
   },
