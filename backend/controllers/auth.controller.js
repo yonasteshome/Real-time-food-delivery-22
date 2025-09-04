@@ -84,7 +84,7 @@ exports.verifyOTP = async (req, res) => {
     });
     res
       .status(200)
-      .json({ status: "success", data : {userId : user._id, role: user.role, } });
+      .json({ status: "success", data: { userId: user._id, role: user.role } });
   } catch (err) {
     logger.error(err.message);
     res.status(500).json({ message: "Server error" });
@@ -132,13 +132,19 @@ exports.login = async (req, res) => {
     );
 
     // Set cookies
+    // Set cookies
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      path: "/",
     });
+
     res.cookie("refreshToken", refreshTokenValue, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      path: "/",
     });
 
     // Send success response
