@@ -84,6 +84,7 @@ exports.verifyOTP = async (req, res) => {
     });
     res
       .status(200)
+
       .json({ status: "success", data: { userId: user._id, role: user.role } });
   } catch (err) {
     logger.error(err.message);
@@ -147,11 +148,24 @@ exports.login = async (req, res) => {
       path: "/",
     });
 
+    // Prepare response data
+    let responseData = { userId: user._id, role: user.role };
+
+    // If restaurant, fetch restaurantId
+    if (user.role === "restaurant") {
+      const restaurant = await require("../models/Restaurant").findOne({
+        ownerId: user._id,
+      });
+      if (restaurant) {
+        responseData.restaurantId = restaurant._id;
+      }
+    }
+
     // Send success response
     res.status(200).json({
       token,
       status: "success",
-      data: { userId: user._id, role: user.role },
+      data: responseData,
     });
   } catch (err) {
     logger.error(err.message);
@@ -164,21 +178,29 @@ exports.refreshToken = async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken)
       return res.status(401).json({ message: "No refresh token provided" });
+
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-    const user = await User.findOne({ _id: decoded.id }, { refreshToken });
+    
+    // Fetch full user, not just refreshToken
+    const user = await User.findOne({ _id: decoded.id });
     if (!user)
       return res.status(401).json({ message: "Invalid refresh token" });
 
-    generateToken(user);
-    res.status(200).json({
-      status: "success",
-      data: { userId: user._id, role: user.role },
-    });
+    // Prepare response
+    let responseData = { userId: user._id, role: user.role };
+    if (user.role === "restaurant") {
+      const restaurant = await require("../models/Restaurant").findOne({ ownerId: user._id });
+      if (restaurant) responseData.restaurantId = restaurant._id;
+    }
+
+    generateToken(user); // optional: generate a new access token
+    res.status(200).json({ status: "success", data: responseData });
   } catch (err) {
     logger.error(err.message);
     res.status(500).json({ message: "Invalid refresh token" });
   }
 };
+
 
 exports.forgotPassword = async (req, res) => {
   try {

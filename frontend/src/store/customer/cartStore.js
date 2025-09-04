@@ -1,111 +1,87 @@
 import { create } from "zustand";
+import useMenuStore from "./menuStore";
 import {
-  fetchCart,
-  addCartItem,
-  updateCartItemQty,
-  removeCartItem,
-  clearCartByRestaurant,
+  fetchCartApi,
+  addToCartApi,
+  updateCartItemApi,
+  removeFromCartApi,
+  clearCartApi,
 } from "../../api/customer/cartApi";
 
 const useCartStore = create((set, get) => ({
   cartItems: [],
-  restaurantId: null,
-  loading: false,
-  error: null,
 
+  // ---------------- LOAD CART ----------------
   loadCart: async () => {
-    set({ loading: true });
-    try {
-      const data = await fetchCart();
-      console.log("Cart loaded:", data);
-      set({
-        cartItems: data.data.items || [],
-        restaurantId: data.data.restaurantId,
-        loading: false,
+    const res = await fetchCartApi();
+    if (res.success) {
+      const backendItems = res.data?.items || [];
+      const { menuItems } = useMenuStore.getState();
+
+      const merged = backendItems.map((item) => {
+        const menuMatch = menuItems.find((m) => m._id === item.menuItemId);
+        return {
+          _id: item._id,
+          menuItemId: item.menuItemId,
+          name: menuMatch?.name || item.name || "Unnamed",
+          price: menuMatch?.price || item.price || 0,
+          quantity: item.quantity,
+          image: menuMatch?.image || "/images/default-food.jpg",
+          restaurantId: item.restaurantId,
+        };
       });
-    } catch (err) {
-      console.error("Error loading cart:", err);
-      set({ error: err.message, loading: false });
+
+      set({ cartItems: merged });
     }
+    return res; // { success, message? }
   },
 
-  addToCart: async (item, restaurantId) => {
-    try {
-      console.log("=== ADD TO CART DEBUG ===");
-      console.log("1. Frontend item clicked:", {
-        _id: item._id,
-        name: item.name,
-        price: item.price,
-        description: item.description,
-        fullItem: item
-      });
-      console.log("2. Restaurant ID:", restaurantId);
-      
-      const res = await addCartItem(item, restaurantId);
-      
-      console.log("3. Backend response:", res);
-      console.log("4. Cart items returned:", res.data.items);
-      
-      set({
-        cartItems: res.data.items || [],
-        restaurantId: res.data.restaurantId,
-      });
-    } catch (err) {
-      console.error("Error adding to cart:", err);
-      set({ error: err.message });
+  // ---------------- ADD ITEM ----------------
+  addToCart: async (item, restaurantId, quantity = 1) => {
+    const res = await addToCartApi(restaurantId, item._id, quantity);
+    if (res.success) {
+      await get().loadCart();
     }
+    return res;
   },
 
-  updateQuantity: async (id, quantity) => {
-    try {
-      const res = await updateCartItemQty(id, quantity);
-      set({
-        cartItems: res.data.items || [],
-        restaurantId: res.data.restaurantId,
-      });
-    } catch (err) {
-      set({ error: err.message });
+  // ---------------- UPDATE QUANTITY ----------------
+  updateQuantity: async (cartId, quantity) => {
+    const res = await updateCartItemApi(cartId, quantity);
+    if (res.success) {
+      await get().loadCart();
     }
+    return res;
   },
 
-  removeFromCart: async (id) => {
-    try {
-      const res = await removeCartItem(id);
-      set({
-        cartItems: res.data.items || [],
-        restaurantId: res.data.restaurantId,
-      });
-    } catch (err) {
-      set({ error: err.message });
+  // ---------------- REMOVE SINGLE ITEM ----------------
+  removeFromCart: async (cartId) => {
+    const res = await removeFromCartApi(cartId);
+    if (res.success) {
+      await get().loadCart();
     }
+    return res;
   },
 
+  // ---------------- CLEAR CART ----------------
   clearCart: async () => {
-    const restaurantId = get().restaurantId;
-    if (!restaurantId) return;
-
-    try {
-      const res = await clearCartByRestaurant(restaurantId);
-      set({
-        cartItems: res.data.items || [],
-        restaurantId: res.data.restaurantId,
-      });
-    } catch (err) {
-      set({ error: err.message });
+    const restaurantId = get().cartItems?.[0]?.restaurantId?._id || null;
+    if (!restaurantId) {
+      set({ cartItems: [] });
+      return { success: true, message: "Cart cleared locally" };
     }
+
+    const res = await clearCartApi(restaurantId);
+    if (res.success) {
+      await get().loadCart();
+    }
+    return res;
   },
 
-  // Force clear cart - useful when restaurant doesn't exist
-  forceCleared: () => {
-    set({
-      cartItems: [],
-      restaurantId: null,
-      error: null,
-    });
-  },
-
+  // ---------------- HELPERS ----------------
   getTotalQuantity: () =>
     get().cartItems.reduce((sum, item) => sum + item.quantity, 0),
+
   getTotalPrice: () =>
     get().cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
 }));

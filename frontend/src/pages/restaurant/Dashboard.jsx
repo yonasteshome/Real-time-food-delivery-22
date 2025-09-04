@@ -1,194 +1,151 @@
 import React, { useState, useEffect } from "react";
-import Sidebar from "../../components/restaurant/Sidebar";
-import OrderStatus from "../../components/OrderStatus";
-import Graphs from "../../components/Graphs";
-import { useOrderStore } from "../../store/restaurant/orderstore";
+import Sidebar from "../../components/restaurant/Sidebar"; // Ensure correct path
 
 export default function Dashboard() {
-  const {
-    orders,
-    fetchOrders,
-    updateOrderStatus,
-    deleteOrder,
-    loading,
-    error,
-  } = useOrderStore();
-  const [modalOrder, setModalOrder] = useState(null);
-  const [activeTab, setActiveTab] = useState("status");
-
-  useEffect(() => {
-    fetchOrders();
-  }, [fetchOrders]);
-
-  const grouped = { pending: [], "in-progress": [], completed: [] };
-  const ordersWithTotal = orders.map((order) => ({
-    ...order,
-    total: order.items.reduce((sum, i) => sum + i.qty * i.price, 0),
-  }));
-  ordersWithTotal.forEach((o) => {
-    if (grouped[o.status]) {
-      grouped[o.status].push(o);
-    }
-  });
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const formatBirr = (x) => "Br " + (x || 0).toLocaleString();
 
-  const handleUpdateStatus = (order, newStatus) => {
-    updateOrderStatus(order.id, newStatus);
-    setModalOrder(null);
+  const fetchOrders = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:5000/api/delivery/orders/all", {
+        method: "GET",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to fetch orders");
+      const data = await res.json();
+      setOrders(data.data?.orders || []);
+    } catch (err) {
+      console.error(err.message);
+      setOrders([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDeleteOrder = (order) => {
-    deleteOrder(order.id);
-    setModalOrder(null);
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const updateStatus = async (order, newStatus) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/delivery/orders/${order._id}/status`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: newStatus }),
+        }
+      );
+      if (!res.ok) throw new Error("Failed to update status");
+      const data = await res.json();
+      setOrders((prev) => prev.map((o) => (o._id === order._id ? data.data : o)));
+    } catch (err) {
+      console.error(err.message);
+    }
   };
+
+  const cancelOrder = async (order) => {
+    await updateStatus(order, "canceled");
+  };
+
+  const nextStatus = (status) => {
+    switch (status) {
+      case "pending":
+        return "accepted";
+      case "accepted":
+        return "preparing";
+      case "preparing":
+        return "ready";
+      default:
+        return null;
+    }
+  };
+
+  // Compute summary
+  const totalOrders = orders.length;
+  const statusCounts = orders.reduce(
+    (acc, o) => {
+      acc[o.status] = (acc[o.status] || 0) + 1;
+      return acc;
+    },
+    {}
+  );
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
-      <Sidebar />
+      {/* Sidebar with fixed width */}
+      <div className="w-64">
+        <Sidebar />
+      </div>
 
-      {/* Main */}
-      <div className="flex-1 p-6 sm:ml-24 ml-20">
-        {/* Sticky Header */}
-        <div className="sticky top-0 bg-gray-50 pb-4 z-40">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-xl md:text-2xl font-semibold text-gray-800">
-              Bonali Burger & Pizza Dashboard
-            </h1>
-            <span className="text-sm text-gray-500">Welcome back, Owner</span>
-          </div>
+      {/* Main content */}
+      <div className="flex-1 p-6 ml-0 md:ml-0">
+        <h1 className="text-2xl font-semibold mb-6">Orders Dashboard</h1>
 
-          {/* Tabs */}
-          <div className="flex gap-6 border-b">
-            <button
-              onClick={() => setActiveTab("status")}
-              className={`pb-2 text-sm font-medium transition ${
-                activeTab === "status"
-                  ? "border-b-2 border-red-500 text-gray-900"
-                  : "text-gray-500 hover:text-gray-800"
-              }`}
-            >
-              Orders
-            </button>
-            <button
-              onClick={() => setActiveTab("graph")}
-              className={`pb-2 text-sm font-medium transition ${
-                activeTab === "graph"
-                  ? "border-b-2 border-red-500 text-gray-900"
-                  : "text-gray-500 hover:text-gray-800"
-              }`}
-            >
-              Graphs
-            </button>
+        {/* Top Summary */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white p-4 rounded shadow">
+            <p className="text-gray-500">Total Orders</p>
+            <p className="text-xl font-bold">{totalOrders}</p>
           </div>
+          {["pending", "accepted", "preparing", "ready", "canceled"].map((status) => (
+            <div key={status} className="bg-white p-4 rounded shadow">
+              <p className="text-gray-500 capitalize">{status}</p>
+              <p className="text-xl font-bold">{statusCounts[status] || 0}</p>
+            </div>
+          ))}
         </div>
 
-        {/* Content */}
-        {loading && <p>Loading orders...</p>}
-        {error && <p className="text-red-500">{error}</p>}
-        {!loading && !error && activeTab === "status" && (
-          <OrderStatus
-            orders={ordersWithTotal}
-            grouped={grouped}
-            setModalOrder={setModalOrder}
-            formatBirr={formatBirr}
-          />
-        )}
-        {!loading && !error && activeTab === "graph" && (
-          <Graphs orders={ordersWithTotal} grouped={grouped} />
-        )}
-
-        {/* Modal */}
-        {modalOrder && (
-          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
-            <div className="bg-white rounded-xl p-6 w-full max-w-xl shadow-lg border border-gray-200">
-              {/* Header */}
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="font-semibold text-lg text-gray-800">
-                  Order #{modalOrder.id}
-                </h2>
-                <button
-                  className="text-gray-400 hover:text-gray-600"
-                  onClick={() => setModalOrder(null)}
-                >
-                  ✕
-                </button>
-              </div>
-
-              {/* Customer Info */}
-              <div className="mb-6">
-                <p className="text-gray-800 font-medium">
-                  {modalOrder.customer}
-                </p>
-                <p className="text-sm text-gray-500">Customer</p>
-              </div>
-
-              {/* Table */}
-              <table className="w-full text-sm border border-gray-200 rounded-lg overflow-hidden mb-6">
-                <thead className="bg-gray-100 text-gray-700">
-                  <tr>
-                    <th className="p-3 text-left font-medium">Item</th>
-                    <th className="p-3 text-center font-medium">Qty</th>
-                    <th className="p-3 text-right font-medium">Price</th>
-                    <th className="p-3 text-right font-medium">Subtotal</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {modalOrder.items.map((i, idx) => (
-                    <tr
-                      key={idx}
-                      className="border-t hover:bg-gray-50 transition"
-                    >
-                      <td className="p-3">{i.name}</td>
-                      <td className="p-3 text-center">{i.qty}</td>
-                      <td className="p-3 text-right">{formatBirr(i.price)}</td>
-                      <td className="p-3 text-right">
-                        {formatBirr(i.qty * i.price)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-                <tfoot>
-                  <tr className=" font-medium">
-                    <td colSpan={3} className="p-3 text-right">
-                      Total
-                    </td>
-                    <td className="p-3 text-right">
-                      {formatBirr(modalOrder.total)}
+        {/* Orders Table */}
+        {loading ? (
+          <p>Loading orders...</p>
+        ) : orders.length === 0 ? (
+          <p>No orders found.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full bg-white border rounded-lg overflow-hidden">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="p-3 text-left">Order ID</th>
+                  <th className="p-3 text-left">Customer</th>
+                  <th className="p-3 text-left">Total</th>
+                  <th className="p-3 text-left">Status</th>
+                  <th className="p-3 text-left">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((order) => (
+                  <tr key={order._id} className="border-t hover:bg-gray-50 transition">
+                    <td className="p-3">{order._id}</td>
+                    <td className="p-3">{order.customerId?.email || "Unknown"}</td>
+                    <td className="p-3">{formatBirr(order.total)}</td>
+                    <td className="p-3 capitalize">{order.status}</td>
+                    <td className="p-3 flex gap-2">
+                      {nextStatus(order.status) && (
+                        <button
+                          className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                          onClick={() => updateStatus(order, nextStatus(order.status))}
+                        >
+                          Mark as {nextStatus(order.status)}
+                        </button>
+                      )}
+                      {order.status !== "canceled" && (
+                        <button
+                          className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                          onClick={() => cancelOrder(order)}
+                        >
+                          Cancel
+                        </button>
+                      )}
                     </td>
                   </tr>
-                </tfoot>
-              </table>
-
-              {/* Actions */}
-              <div className="flex justify-end gap-3">
-                {modalOrder.status === "pending" && (
-                  <button
-                    className="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-lg text-sm"
-                    onClick={() =>
-                      handleUpdateStatus(modalOrder, "in-progress")
-                    }
-                  >
-                    Mark as Preparing
-                  </button>
-                )}
-                {modalOrder.status === "in-progress" && (
-                  <button
-                    className="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-lg text-sm"
-                    onClick={() => handleUpdateStatus(modalOrder, "completed")}
-                  >
-                    Mark as Completed
-                  </button>
-                )}
-                <button
-                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm"
-                  onClick={() => handleDeleteOrder(modalOrder)}
-                >
-                  Delete Order
-                </button>
-              </div>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
