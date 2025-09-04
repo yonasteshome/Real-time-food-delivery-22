@@ -7,6 +7,7 @@ const menuItemSchema = new mongoose.Schema({
   image: { type: String, trim: true },
   inStock: { type: Boolean, default: true },
 });
+
 const restaurantSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
   location: {

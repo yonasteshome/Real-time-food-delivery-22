@@ -24,8 +24,8 @@ router.post(
 
 router.get(
   "/all",
-  protect, // Keep active as per the 'main' branch's intention
-  restrictTo("customer", "restaurant", "admin"), // Keep active as per the 'main' branch's intention
+  protect,
+  restrictTo("customer", "restaurant", "admin"),
   getOrderHistory
 );
 
