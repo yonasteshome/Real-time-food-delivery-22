@@ -200,8 +200,18 @@ exports.refreshToken = async (req, res) => {
     res.status(500).json({ message: "Invalid refresh token" });
   }
 };
-
-
+exports.logout = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+  });
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+  });
+};
 exports.forgotPassword = async (req, res) => {
   try {
     const { email, phone } = req.body;

@@ -22,7 +22,7 @@ const driverOrders = async (req, res) => {
         const {driverId} = req.params;
         const driver = await User.find({ _id: driverId });
         if (!driver) return res.status(404).json({ message: "Driver not found" });
-        const orders = await Order.find({ driverId: driverId });
+        const orders = await Order.find({ driverId: mongoose.Types.ObjectId(driverId), deleted: false });
         if (!orders) return res.status(404).json({ message: "No orders found for this driver" });
         res.status(200).json({ status: "success", data: { driver, orders } });
 
@@ -35,7 +35,10 @@ const changeDriverStatus = async (req, res) => {
     try {
         const driver = await User.findById(req.user._id);
         if (!driver) return res.status(404).json({ message: "Driver not found" });
-
+        const validStatuses = ["available", "unavailable"];
+        if (!validStatuses.includes(req.body.status)) {
+            return res.status(400).json({ message: "Invalid status value" });
+        }
         driver.status = req.body.status;
         await driver.save();
 
@@ -45,8 +48,6 @@ const changeDriverStatus = async (req, res) => {
        res.status(500).json({ message: error.message });
     }
 }
-
-
 
 const dailyAndTotalEarning = async (req, res) => {
   try {

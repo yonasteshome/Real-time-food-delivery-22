@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Restaurant = require("../models/Restaurant");
 const logger = require("../utils/logger");
 const User = require("../models/Users");
+const Order = require("../models/Order");
 const { client: redisClient } = require("../config/redis");
 const { sendOTP } = require("../utils/afroMessage");
 // Helper to check ownership
@@ -249,6 +250,41 @@ const restaurantStats = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch restaurant stats" });
   }
 };
+const getAllOrder = async (req, res) => {
+  try {
+    const restaurant = await Restaurant.findOne({ ownerId: req.user._id });
+    if (!restaurant) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized: Restaurant not found" });
+    }
+    const restaurantId = restaurant._id;
+    const orders = await Order.find({ restaurantId }).populate(
+      "customerId",
+      "name email phone"
+    );
+    res.status(200).json({ orders });
+  } catch (error) {
+    logger.error("Error fetching orders:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+const getOrderById = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const order = await Order.findById(orderId).populate(
+      "customerId",
+      "name email phone"
+    );
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    res.status(200).json({ order });
+  } catch (error) {
+    logger.error("Error fetching order:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 const inviteDriver = async (req, res) => {
   try {
     const { phone } = req.body;
@@ -305,17 +341,58 @@ const inviteDriver = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+const assignDriverToOrder = async (req, res) => {
+  try {
+    const { orderId, driverId } = req.body;
 
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    order.driverId = driverId;
+    await order.save();
+    res.status(200).json({ message: "Driver assigned to order", order });
+  } catch (error) {
+    logger.error("Error assigning driver to order:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+const activeDrivers = async (req, res) => {
+  try {
+    const restaurant = await Restaurant.findOne({ ownerId: req.user._id });
+    if (!restaurant) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized: Restaurant not found" });
+    }
+    const restaurantId = restaurant._id;
+    // Find active drivers for this restaurant
+    const drivers = await User.find({
+      role: "driver",
+      restaurantId: mongoose.Types.ObjectId(restaurantId),
+      status: "active",
+    });
+    res.status(200).json({ drivers });  
+  } catch (error) {
+    logger.error("Error fetching active drivers:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 module.exports = {
   getAllRestaurants,
   getRestaurantById,
-  getMenus,
-  getMenuItem,
-  restaurantStats,
   addMenuItem,
   deleteMenuItem,
   updateMenuItem,
-  updateInventory,
   registerRestaurant,
+  getMenus,
+  getMenuItem,
+  updateInventory,
+  restaurantStats,
+  getAllOrder,
+  getOrderById,
   inviteDriver,
+  assignDriverToOrder,
+  activeDrivers,  
 };

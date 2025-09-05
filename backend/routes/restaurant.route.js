@@ -8,17 +8,21 @@ const {
   addMenuItem,
   deleteMenuItem,
   updateMenuItem,
+  registerRestaurant,
   getMenus,
   getMenuItem,
   updateInventory,
-  registerRestaurant,
   restaurantStats,
-  inviteDriver
+  getAllOrder,
+  getOrderById,
+  inviteDriver,
+  assignDriverToOrder,
+  activeDrivers,
 } = require("../controllers/restaurant.controller");
 
 router.post("/register", registerRestaurant);
 router.post("/invite-driver", protect, restrictTo('restaurant'), inviteDriver);
-
+router.post("/assign-driver", protect, restrictTo('restaurant'), assignDriverToOrder);
 router.get("/", protect, getAllRestaurants);
 router.get("/:id", protect, getRestaurantById);
 router.post("/:restaurantId/menu", protect, restrictTo('restaurant'), addMenuItem);
@@ -28,5 +32,7 @@ router.get("/:restaurantId/menu", protect, getMenus);
 router.get("/:restaurantId/menu/:itemId", protect, getMenuItem);
 router.put("/:restaurantId/inventory", protect, restrictTo('restaurant'), updateInventory);
 router.get("/:restaurantId/stats", protect, restrictTo('restaurant', 'admin'), restaurantStats);
-
+router.get("/:restaurantId/active-drivers", protect, restrictTo('restaurant'), activeDrivers);
+router.get("/:restaurantId/orders", protect, restrictTo('restaurant', 'admin'), getAllOrder);
+router.get("/:restaurantId/orders/:orderId", protect, restrictTo('restaurant', 'admin'), getOrderById);
 module.exports = router;
