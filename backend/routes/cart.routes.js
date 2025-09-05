@@ -16,10 +16,10 @@ const restrictTo = require("../middlewares/restrictTo");
 
 const router = express.Router();
 
-router.post("/", protect, restrictTo("customer"), validateAddToCart, addToCart);
-router.put("/:id", protect, validateUpdateCartItem, updateCartItem);
-router.delete("/:restaurantId", protect, deleteCart);
-router.delete("/:id", protect, removeFromCart);
-router.get("/", protect, getCart);
+router.get("/getCart", protect, getCart);
+router.post("/addToCart", protect, restrictTo("customer"), validateAddToCart, addToCart);
+router.put("/updateCart/:id", protect, validateUpdateCartItem, updateCartItem);
+router.delete("/deleteCart/:restaurantId", protect, deleteCart);
+router.delete("/removeFromCart/:id", protect, removeFromCart, validateRemoveFromCart);
 
 module.exports = router;

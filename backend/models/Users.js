@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const { required } = require("joi");
 
+
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -21,6 +22,14 @@ const userSchema = new mongoose.Schema({
   restaurantId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Restaurant",
+    required: function () {
+      return this.role === "driver";
+    },
+  },
+  status: {
+    type: String,
+    enum: ["available", "unavailable"],
+    default: "unavailable",
     required: function () {
       return this.role === "driver";
     },
