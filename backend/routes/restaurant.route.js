@@ -18,6 +18,7 @@ const {
   inviteDriver,
   assignDriverToOrder,
   activeDrivers,
+  restaurantOrderStat
 } = require("../controllers/restaurant.controller");
 
 router.post("/register", registerRestaurant);
@@ -35,4 +36,6 @@ router.get("/:restaurantId/stats", protect, restrictTo('restaurant', 'admin'), r
 router.get("/:restaurantId/active-drivers", protect, restrictTo('restaurant'), activeDrivers);
 router.get("/:restaurantId/orders", protect, restrictTo('restaurant', 'admin'), getAllOrder);
 router.get("/:restaurantId/orders/:orderId", protect, restrictTo('restaurant', 'admin'), getOrderById);
+router.get("/:restaurantId/order-stats", protect, restrictTo('restaurant', 'admin'), restaurantOrderStat);
+router.get("/:restaurantId/order-stats", protect, restrictTo('restaurant', 'admin'), restaurantOrderStat);
 module.exports = router;
