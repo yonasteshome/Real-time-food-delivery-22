@@ -253,7 +253,7 @@ const restaurantStats = async (req, res) => {
 const getAllOrder = async (req, res) => {
   try {
     const restaurantId = req.params.restaurantId;
-    const restaurant = await Restaurant.findOne({ ownerId: restaurantId });
+    const restaurant = await Restaurant.findOne({ _id: restaurantId });
     if (!restaurant) {
       return res
         .status(403)
