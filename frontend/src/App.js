@@ -41,7 +41,8 @@ import AssignDriverPage from "./pages/restaurant/AssignDriver";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserManagement from "./pages/admin/UserManagement";
 import RestaurantManagement from "./pages/admin/RestaurantManagement";
-import PendingRestaurants from "./pages/admin/PendingRestaurants";
+import PendingRestaurants from "./pages/admin/PendingRestaurant";
+import {AdminLogin} from './pages/admin/Login'
 
 // Driver Pages
 import DriverOrders from "./pages/driver/DriverOrders";
@@ -193,11 +194,21 @@ function App() {
           />
 
           {/* Admin Pages */}
+                    <Route path="/admin/login" element={<AdminLogin  />} />
+
           <Route
             path="/admin"
             element={
               <PrivateRoute>
                 <AdminDashboard />
+              </PrivateRoute>
+            }
+          />
+           <Route
+            path="/admin/login"
+            element={
+              <PrivateRoute>
+                <AdminLogin />
               </PrivateRoute>
             }
           />
@@ -218,11 +229,11 @@ function App() {
             }
           />
           <Route
-            path="/admin/restaurants/pending"
+            path="/pending"
             element={
-              <PrivateRoute>
+              
                 <PendingRestaurants />
-              </PrivateRoute>
+              
             }
           />
         </Routes>
