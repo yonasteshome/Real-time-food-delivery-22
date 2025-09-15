@@ -1,5 +1,6 @@
 const User = require("../models/Users");  
 const Order = require("../models/Order");
+const DriverLocation = require("../models/DriverLocation");
 const logger = require("../utils/logger");
 const mongoose = require("mongoose");
 const registerDriver = async (req, res) => {
@@ -17,6 +18,34 @@ const registerDriver = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 }
+const currentLocation = async (req, res) => {
+    try {
+        const driverId = await req.params.driverId;
+        const { latitude, longitude } = req.body;
+        const driver = await DriverLocation.findById(driverId);
+        if (!driver) return res.status(404).json({ message: "Driver not found" });
+        driver.location = {
+            type: "Point",
+            coordinates: [longitude, latitude]
+        };
+        await driver.save();
+        res.status(200).json({ status: "success", data: { driver } });
+    } catch (error) {
+        logger.error(`Error updating driver location: ${error.message}`);
+        res.status(500).json({ message: error.message });
+    }
+};
+const getCurrentLocation = async (req, res) => {
+    try {
+        const driverId = await req.params.driverId;
+        const driver = await DriverLocation.findById(driverId);
+        if (!driver) return res.status(404).json({ message: "Driver not found" });
+        res.status(200).json({ status: "success", data: { currentLocation: driver.location } });
+    } catch (error) {
+        logger.error(`Error fetching driver location: ${error.message}`);
+        res.status(500).json({ message: error.message });
+    }
+};
 const driverOrders = async (req, res) => {
   try {
     const { driverId } = req.params;
@@ -75,53 +104,37 @@ const dailyAndTotalEarning = async (req, res) => {
     startOfWeek.setDate(startOfWeek.getDate() - 7);
     startOfWeek.setHours(0, 0, 0, 0);
 
-    const [todaysOrderCount, todayEarnings, weeklyEarning, totalEarnings] =
+    // Only count delivered orders
+    const orderFilter = {
+      driverId,
+      deleted: false,
+      status: "delivered",
+    };
+
+    const [todaysOrderCount, weeklyOrderCount, totalOrderCount] =
       await Promise.all([
-        // Orders today
         Order.countDocuments({
-          driverId: driverId,
-          deleted: false,
+          ...orderFilter,
           createdAt: { $gte: startOfDay, $lt: endOfDay },
         }),
 
-        // Today's earnings
-        Order.aggregate([
-          {
-            $match: {
-              driverId: driverId,
-              deleted: false,
-              createdAt: { $gte: startOfDay, $lt: endOfDay },
-            },
-          },
-          { $group: { _id: null, total: { $sum: "$total" } } },
-        ]),
+        Order.countDocuments({
+          ...orderFilter,
+          createdAt: { $gte: startOfWeek, $lt: new Date() },
+        }),
 
-        // Weekly earnings
-        Order.aggregate([
-          {
-            $match: {
-              driverId: driverId,
-              deleted: false,
-              createdAt: { $gte: startOfWeek, $lt: new Date() },
-            },
-          },
-          { $group: { _id: null, total: { $sum: "$total" } } },
-        ]),
-
-        // Total earnings
-        Order.aggregate([
-          { $match: { driverId: driverId, deleted: false } },
-          { $group: { _id: null, total: { $sum: "$total" } } },
-        ]),
+        Order.countDocuments(orderFilter),
       ]);
+
+    const earningPerOrder = 150;
 
     res.status(200).json({
       status: "success",
       data: {
         todaysOrderCount,
-        todayEarnings: todayEarnings[0]?.total || 0,
-        weeklyEarning: weeklyEarning[0]?.total || 0,
-        totalEarnings: totalEarnings[0]?.total || 0,
+        todayEarnings: todaysOrderCount * earningPerOrder,
+        weeklyEarning: weeklyOrderCount * earningPerOrder,
+        totalEarnings: totalOrderCount * earningPerOrder,
       },
     });
   } catch (error) {
@@ -133,6 +146,8 @@ const dailyAndTotalEarning = async (req, res) => {
 module.exports = {
     registerDriver,
     driverOrders,
+    currentLocation,
+    getCurrentLocation,
     changeDriverStatus,
     dailyAndTotalEarning
 }

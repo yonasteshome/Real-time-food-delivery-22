@@ -253,9 +253,9 @@ const restaurantStats = async (req, res) => {
 const getAllOrder = async (req, res) => {
   try {
     const restaurantId = req.params.restaurantId;
-
     // Find the restaurant
     const restaurant = await Restaurant.findById(restaurantId);
+
     if (!restaurant) {
       return res.status(404).json({ message: "Restaurant not found" });
     }
