@@ -32,12 +32,23 @@ import Dashboard from "./pages/restaurant/Dashboard";
 import AddMenuItem from "./pages/restaurant/MenuManager";
 import MenuManagement from "./pages/restaurant/MenuManagementpage";
 import InventoryPage from "./pages/restaurant/InventoryPage";
+import CreateDriver from "./pages/restaurant/createDriver";
+import StatsDashboard from "./pages/restaurant/StatsDashboard";
+import ActiveDriversPage from "./pages/restaurant/ActiveDriversPage";
+import AssignDriverPage from "./pages/restaurant/AssignDriver";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserManagement from "./pages/admin/UserManagement";
 import RestaurantManagement from "./pages/admin/RestaurantManagement";
 import PendingRestaurants from "./pages/admin/PendingRestaurants";
+
+// Driver Pages
+import DriverOrders from "./pages/driver/DriverOrders";
+import LoginPage from "./pages/driver/Login";
+import DriverVerificationCode from "./components/driver/VerificationCode";
+import DriverEarnings from "./pages/driver/DriverEarnings";
+import DriverOrderStatus from "./pages/driver/DriverOrderStatus";
 
 function App() {
   const { checkAuth } = useAuthStore();
@@ -47,9 +58,9 @@ function App() {
     checkAuth();
   }, [checkAuth]);
 
-  // Protected route wrapper with loading handling
-  const PrivateRoute = ({ children, allowedRoles }) => {
-    const { isLoggedIn, role, loading } = useAuthStore();
+  // Protected route wrapper (only checks login, no role)
+  const PrivateRoute = ({ children }) => {
+    const { isLoggedIn, loading } = useAuthStore();
 
     if (loading)
       return (
@@ -59,8 +70,6 @@ function App() {
       );
 
     if (!isLoggedIn) return <Navigate to="/restaurant/login" replace />;
-    if (allowedRoles && !allowedRoles.includes(role))
-      return <Navigate to="/" replace />;
 
     return children;
   };
@@ -83,24 +92,17 @@ function App() {
           <Route path="/menu/:restaurantId" element={<MenuPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
-          <Route
-            path="/order-confirmation"
-            element={<OrderConfirmationPage />}
-          />
+          <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
           <Route path="/order-status" element={<OrderStatus />} />
 
           {/* Restaurant Pages */}
           <Route path="/restaurant/login" element={<RestaurantLogin />} />
           <Route path="/restaurant/signup" element={<RestaurantSignup />} />
-          <Route
-            path="/restaurant/verify"
-            element={<RestaurantVerificationCode />}
-          />
-
+          <Route path="/restaurant/verify" element={<RestaurantVerificationCode />} />
           <Route
             path="/restaurant/dashboard"
             element={
-              <PrivateRoute allowedRoles={["restaurant"]}>
+              <PrivateRoute>
                 <Dashboard />
               </PrivateRoute>
             }
@@ -108,7 +110,7 @@ function App() {
           <Route
             path="/restaurant/menu"
             element={
-              <PrivateRoute allowedRoles={["restaurant"]}>
+              <PrivateRoute>
                 <AddMenuItem />
               </PrivateRoute>
             }
@@ -116,7 +118,7 @@ function App() {
           <Route
             path="/MenuManagement/:restaurantId"
             element={
-              <PrivateRoute allowedRoles={["restaurant"]}>
+              <PrivateRoute>
                 <MenuManagement />
               </PrivateRoute>
             }
@@ -124,9 +126,69 @@ function App() {
           <Route
             path="/inventory/:restaurantId"
             element={
-              <PrivateRoute allowedRoles={["restaurant"]}>
+              <PrivateRoute>
                 <InventoryPage />
               </PrivateRoute>
+            }
+          />
+          <Route
+            path="/restaurant/create"
+            element={
+              <PrivateRoute>
+                <CreateDriver />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/restaurant/status"
+            element={
+              <PrivateRoute>
+                <StatsDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/restaurant/active-drivers"
+            element={
+              <PrivateRoute>
+                <ActiveDriversPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/restaurant/assign-driver"
+            element={
+              <PrivateRoute>
+                <AssignDriverPage />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Driver Pages (like customer, no role check) */}
+          <Route path="/driver/login" element={<LoginPage />} />
+          <Route path="/driver/verify" element={<DriverVerificationCode />} />
+          <Route
+            path="/driver/orders/:driverId"
+            element={
+              
+                <DriverOrders />
+            
+            }
+          />
+          <Route
+            path="/driver/status/:driverId"
+            element={
+              
+                <DriverOrderStatus />
+              
+            }
+          />
+          <Route
+            path="/driver/earnings"
+            element={
+            
+                <DriverEarnings />
+              
             }
           />
 
@@ -134,7 +196,7 @@ function App() {
           <Route
             path="/admin"
             element={
-              <PrivateRoute allowedRoles={["admin"]}>
+              <PrivateRoute>
                 <AdminDashboard />
               </PrivateRoute>
             }
@@ -142,7 +204,7 @@ function App() {
           <Route
             path="/admin/users"
             element={
-              <PrivateRoute allowedRoles={["admin"]}>
+              <PrivateRoute>
                 <UserManagement />
               </PrivateRoute>
             }
@@ -150,7 +212,7 @@ function App() {
           <Route
             path="/admin/restaurants"
             element={
-              <PrivateRoute allowedRoles={["admin"]}>
+              <PrivateRoute>
                 <RestaurantManagement />
               </PrivateRoute>
             }
@@ -158,7 +220,7 @@ function App() {
           <Route
             path="/admin/restaurants/pending"
             element={
-              <PrivateRoute allowedRoles={["admin"]}>
+              <PrivateRoute>
                 <PendingRestaurants />
               </PrivateRoute>
             }

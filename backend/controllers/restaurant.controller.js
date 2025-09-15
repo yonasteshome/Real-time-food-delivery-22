@@ -253,17 +253,29 @@ const restaurantStats = async (req, res) => {
 const getAllOrder = async (req, res) => {
   try {
     const restaurantId = req.params.restaurantId;
-    const restaurant = await Restaurant.findOne({ _id: restaurantId });
+    // Find the restaurant
+    const restaurant = await Restaurant.findById(restaurantId);
+
     if (!restaurant) {
-      return res
-        .status(403)
-        .json({ message: "Not authorized: Restaurant not found" });
+      return res.status(404).json({ message: "Restaurant not found" });
     }
 
+    // Authorization check (only owner or admin can access)
+    if (
+      req.user.role !== "admin" &&
+      !restaurant.ownerId.equals(req.user._id)
+    ) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to access this restaurant's orders" });
+    }
+
+    // Fetch orders
     const orders = await Order.find({ restaurantId }).populate(
       "customerId",
       "name email phone"
     );
+
     res.status(200).json({ orders });
   } catch (error) {
     logger.error("Error fetching orders:", error);
@@ -341,8 +353,7 @@ const inviteDriver = async (req, res) => {
     logger.error("Error inviting driver:", error);
     res.status(500).json({ message: "Server error" });
   }
-};
-const assignDriverToOrder = async (req, res) => {
+};const assignDriverToOrder = async (req, res) => {
   try {
     const { orderId, driverId } = req.body;
 
@@ -361,22 +372,24 @@ const assignDriverToOrder = async (req, res) => {
 };
 const activeDrivers = async (req, res) => {
   try {
-    const restaurant = await Restaurant.findOne({ ownerId: req.user._id });
+    const { restaurantId } = req.params;
+
+    // ✅ Check if restaurant exists
+    const restaurant = await Restaurant.findById(restaurantId);
     if (!restaurant) {
-      return res
-        .status(403)
-        .json({ message: "Not authorized: Restaurant not found" });
+      return res.status(404).json({ message: "Restaurant not found" });
     }
-    const restaurantId = restaurant._id;
-    // Find active drivers for this restaurant
+
+    // ✅ Find active drivers linked to this restaurant
     const drivers = await User.find({
       role: "driver",
-      restaurantId: mongoose.Types.ObjectId(restaurantId),
-      status: "active",
-    });
-    res.status(200).json({ drivers });
+      restaurantId: restaurant._id,
+      status: "available",
+    }).select("-password"); // exclude sensitive fields
+
+    res.json({ drivers });
   } catch (error) {
-    logger.error("Error fetching active drivers:", error);
+    console.error("Error fetching active drivers:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
