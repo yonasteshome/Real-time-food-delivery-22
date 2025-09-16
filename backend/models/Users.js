@@ -34,20 +34,7 @@ const userSchema = new mongoose.Schema({
       return this.role === "driver";
     },
   },
-  currentLocation: {
-    type: {
-      type: String,
-      enum: ["Point"],
-      default: "Point",
-    },
-    coordinates: {
-      type: [Number], // [longitude, latitude]
-      default: [0, 0],
-    },
-    required: function () {
-      return this.role === "driver";
-    },
-  },
+
   resetPasswordToken: { type: String },
   resetPasswordExpires: { type: Date },
   googleId: { type: String },
