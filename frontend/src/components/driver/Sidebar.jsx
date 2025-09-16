@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  FiHome,
+  FiUser,
   FiDollarSign,
   FiShoppingBag,
   FiCheckCircle,
@@ -33,16 +33,18 @@ const DriverSidebar = () => {
   }, [checkAuth]);
 
   const driverNavItems = [
-    { label: "Dashboard", icon: FiHome, path: "/driver/dashboard" },
-    { label: "Earnings", icon: FiDollarSign, path: "/driver/earnings" },
     {
       label: "Orders",
       icon: FiShoppingBag,
       path: driverId ? `/driver/orders/${driverId}` : "/driver/orders",
     },
-    { label: "Status", icon: FiCheckCircle,
-        path: driverId ? `/driver/status/${driverId}` : "/driver/status",
-     },
+    { label: "Earnings", icon: FiDollarSign, path: "/driver/earnings" },
+    {
+      label: "Status",
+      icon: FiCheckCircle,
+      path: driverId ? `/driver/status/${driverId}` : "/driver/status",
+    },
+    { label: "Profile", icon: FiUser, path: "/profile" },
   ];
 
   const handleLogout = () => {

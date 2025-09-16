@@ -4,6 +4,7 @@ import {
   FiUsers,
   FiShoppingBag,
   FiCheckCircle,
+  FiUser,
 } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -25,6 +26,7 @@ const Sidebar = () => {
       icon: FiCheckCircle,
       path: "/admin/restaurants/pending",
     },
+    { label: "Profile", icon: FiUser, path: "/profile" },
   ];
 
   return (

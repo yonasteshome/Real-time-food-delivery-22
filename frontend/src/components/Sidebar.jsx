@@ -5,9 +5,7 @@ import {
   FiShoppingBag,
   FiTag,
   FiSettings,
-  FiShield,
-  FiUsers,
-  FiCheckCircle,
+  FiUser,
 } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -19,8 +17,8 @@ const Sidebar = () => {
     { label: "Explore", icon: FiMap, path: "/nearby" },
     { label: "Orders", icon: FiShoppingBag, path: "/order-history" },
     { label: "Promos", icon: FiTag, path: "/promos" },
+    { label: "Profile", icon: FiUser, path: "/profile" },
     { label: "Setting", icon: FiSettings, path: "/settings" },
-    { label: "Admin Dashboard", icon: FiShield, path: "/admin" },
   ];
 
   return (
