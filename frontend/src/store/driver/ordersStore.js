@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import {
   fetchDriverOrdersAPI,
+  fetchDriverEarningsAPI,
   updateDriverStatusAPI,
   updateOrderStatusAPI,
 } from "../../api/driver/orders";
@@ -8,6 +9,7 @@ import {
 const useDriverOrdersStore = create((set, get) => ({
   driver: null,
   orders: [],
+  earnings: null,
   loading: false,
   error: "",
   updatingStatus: false,
@@ -28,7 +30,8 @@ const useDriverOrdersStore = create((set, get) => ({
 
     set({ updatingStatus: true, error: "" });
     try {
-      const newStatus = driver.status === "available" ? "unavailable" : "available";
+      const newStatus =
+        driver.status === "available" ? "unavailable" : "available";
       const updatedDriver = await updateDriverStatusAPI(newStatus);
       set({ driver: updatedDriver, updatingStatus: false });
     } catch (err) {

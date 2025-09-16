@@ -1,3 +1,4 @@
+import Profile from "./pages/Profile";
 import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
@@ -41,8 +42,7 @@ import AssignDriverPage from "./pages/restaurant/AssignDriver";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserManagement from "./pages/admin/UserManagement";
 import RestaurantManagement from "./pages/admin/RestaurantManagement";
-import PendingRestaurants from "./pages/admin/PendingRestaurant";
-import {AdminLogin} from './pages/admin/Login'
+import PendingRestaurants from "./pages/admin/PendingRestaurants";
 
 // Driver Pages
 import DriverOrders from "./pages/driver/DriverOrders";
@@ -50,6 +50,7 @@ import LoginPage from "./pages/driver/Login";
 import DriverVerificationCode from "./components/driver/VerificationCode";
 import DriverEarnings from "./pages/driver/DriverEarnings";
 import DriverOrderStatus from "./pages/driver/DriverOrderStatus";
+import OrderMapPage from "./pages/driver/OrderMapPage";
 
 function App() {
   const { checkAuth } = useAuthStore();
@@ -93,13 +94,27 @@ function App() {
           <Route path="/menu/:restaurantId" element={<MenuPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
+          <Route
+            path="/order-confirmation"
+            element={<OrderConfirmationPage />}
+          />
           <Route path="/order-status" element={<OrderStatus />} />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+          />
 
           {/* Restaurant Pages */}
           <Route path="/restaurant/login" element={<RestaurantLogin />} />
           <Route path="/restaurant/signup" element={<RestaurantSignup />} />
-          <Route path="/restaurant/verify" element={<RestaurantVerificationCode />} />
+          <Route
+            path="/restaurant/verify"
+            element={<RestaurantVerificationCode />}
+          />
           <Route
             path="/restaurant/dashboard"
             element={
@@ -168,47 +183,23 @@ function App() {
           {/* Driver Pages (like customer, no role check) */}
           <Route path="/driver/login" element={<LoginPage />} />
           <Route path="/driver/verify" element={<DriverVerificationCode />} />
-          <Route
-            path="/driver/orders/:driverId"
-            element={
-              
-                <DriverOrders />
-            
-            }
-          />
+          <Route path="/driver/orders/:driverId" element={<DriverOrders />} />
           <Route
             path="/driver/status/:driverId"
-            element={
-              
-                <DriverOrderStatus />
-              
-            }
+            element={<DriverOrderStatus />}
           />
           <Route
-            path="/driver/earnings"
-            element={
-            
-                <DriverEarnings />
-              
-            }
+            path="/driver/orders/:orderId/map"
+            element={<OrderMapPage />}
           />
+          <Route path="/driver/earnings" element={<DriverEarnings />} />
 
           {/* Admin Pages */}
-                    <Route path="/admin/login" element={<AdminLogin  />} />
-
           <Route
             path="/admin"
             element={
               <PrivateRoute>
                 <AdminDashboard />
-              </PrivateRoute>
-            }
-          />
-           <Route
-            path="/admin/login"
-            element={
-              <PrivateRoute>
-                <AdminLogin />
               </PrivateRoute>
             }
           />
@@ -229,11 +220,11 @@ function App() {
             }
           />
           <Route
-            path="/pending"
+            path="/admin/restaurants/pending"
             element={
-              
+              <PrivateRoute>
                 <PendingRestaurants />
-              
+              </PrivateRoute>
             }
           />
         </Routes>
