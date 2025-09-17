@@ -99,6 +99,8 @@ function App() {
             element={<OrderConfirmationPage />}
           />
             <Route path="/orders/:orderId" element={<OrderStatus />} />  
+                        <Route path="/order-status" element={<OrderStatus />} />  
+
             <Route
             path="/profile"
             element={
