@@ -98,8 +98,8 @@ function App() {
             path="/order-confirmation"
             element={<OrderConfirmationPage />}
           />
-          <Route path="/order-status" element={<OrderStatus />} />
-          <Route
+            <Route path="/orders/:orderId" element={<OrderStatus />} />  
+            <Route
             path="/profile"
             element={
               <PrivateRoute>
