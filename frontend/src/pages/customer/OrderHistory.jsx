@@ -1,6 +1,6 @@
+// src/pages/customer/OrderHistory.jsx
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import { getOrderHistory } from "../../api/customer/orderHistoryApi";
 
@@ -8,14 +8,11 @@ const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        // Call our API utility function to fetch order history
         const data = await getOrderHistory();
-        // Assumes your backend returns an object with data.orders, adjust accordingly.
         setOrders(data.data.orders);
       } catch (err) {
         setError(err.message);
@@ -64,7 +61,7 @@ const OrderHistory = () => {
                 key={order._id}
                 className="block"
               >
-                <div className="grid grid-cols-5 items-center py-4 border-b text-sm">
+                <div className="grid grid-cols-5 items-center py-4 border-b text-sm hover:bg-gray-50 cursor-pointer">
                   <div className="flex items-center gap-3">
                     <img
                       src={

@@ -1,84 +1,139 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// src/pages/customer/OrderStatus.jsx
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { getOrderHistory } from "../../api/customer/orderHistoryApi";
 
-const steps = ["Confirmed", "Preparing", "On the way", "Delivered"];
-const currentState = "Confirmed"; // Change this value dynamically as needed
+const steps = [
+  "pending",
+  "accepted",
+  "preparing",
+  "ready",
+  "picked",
+  "enroute",
+  "delivered",
+];
 
 const OrderStatus = () => {
+  const { orderId } = useParams(); // optional: order ID from history
+  const [order, setOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
-  const handleViewOrder = () => {
-    if (currentState === "Delivered") {
-      setShowModal(true);
-    } else {
-      // Navigate to the NearbyRestaurants page
-      navigate("/nearby");
+  useEffect(() => {
+    const fetchOrder = async () => {
+      try {
+        const data = await getOrderHistory();
+        let selectedOrder;
+
+        if (orderId) {
+          // Find the clicked order
+          selectedOrder = data.data.orders.find((o) => o._id === orderId);
+        } else {
+          // No orderId: show the latest order
+          selectedOrder = data.data.orders[0];
+        }
+
+        if (selectedOrder) setOrder(selectedOrder);
+      } catch (err) {
+        console.error("Failed to fetch order:", err);
+      }
+    };
+
+    fetchOrder();
+  }, [orderId]);
+
+  if (!order) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p>Loading order status...</p>
+      </div>
+    );
+  }
+
+  const currentState = order.status?.toLowerCase();
+
+  const completedSteps = steps.map((step) => {
+    if (currentState === "accepted") {
+      return step === "pending" || step === "accepted";
     }
-  };
+    return steps.indexOf(step) <= steps.indexOf(currentState);
+  });
+
+  // Inside OrderStatus.jsx
+
+const handleViewMap = () => {
+  if (currentState === "picked") {
+    navigate(`/driver/orders/${order._id}/map`); // Use the order ID dynamically
+  }
+};
+
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white">
-      <div className="bg-gray-100 rounded-lg p-10 shadow-lg flex flex-col items-center space-y-6">
-        <h1 className="text-3xl font-semibold text-center mb-6">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+      <div className="bg-white rounded-2xl p-8 shadow-xl w-full max-w-3xl flex flex-col items-center">
+        <h1 className="text-3xl font-bold mb-4 text-gray-800">
           Order Status
         </h1>
-        <div className="flex items-center mb-12">
+        <p className="mb-6 font-medium">
+          Order ID: <span className="text-red-500">{order._id}</span>
+        </p>
+
+        {/* Steps */}
+        <div className="flex items-center w-full mb-8">
           {steps.map((step, index) => (
-            <div key={index} className="flex items-center">
+            <div key={index} className="flex items-center flex-1">
               <div className="flex flex-col items-center">
-                {step === currentState ? (
-                  <div
-                    className="flex items-center justify-center rounded-full h-12 w-12 
-                            border-none bg-red-500 border-2 border-gray-500 text-black font-semibold"
-                  >
-                    <i className="bx bx-check text-white text-xl"></i>
-                  </div>
-                ) : (
-                  <div
-                    className="flex items-center justify-center rounded-full h-12 w-12
-                            bg-white border-2 border-gray-500 text-black font-semibold"
-                  >
-                    {index + 1}
-                  </div>
-                )}
-                <p className="mt-2 text-sm font-semibold">{step}</p>
+                <div
+                  className={`flex items-center justify-center h-12 w-12 rounded-full text-white font-bold transition-all duration-300
+                    ${completedSteps[index] ? "bg-green-500" : "bg-gray-300"}`}
+                >
+                  {completedSteps[index] ? (
+                    <i className="bx bx-check text-xl"></i>
+                  ) : (
+                    index + 1
+                  )}
+                </div>
+                <p className="mt-2 text-sm font-medium capitalize text-gray-700">
+                  {step}
+                </p>
               </div>
               {index !== steps.length - 1 && (
-                <div className="h-[2px] w-20 bg-gray-500 mx-2"></div>
+                <div
+                  className={`flex-1 h-2 mx-2 rounded-full transition-all duration-300 ${
+                    completedSteps[index] ? "bg-green-500" : "bg-gray-300"
+                  }`}
+                />
               )}
             </div>
           ))}
         </div>
-        <div className="flex items-center justify-center mt-10">
-          <button
-            onClick={handleViewOrder}
-            className="px-10 py-3 text-white font-semibold 
-                border-none rounded-3xl bg-red-500 mt-10"
-          >
-            View Your Order
-          </button>
-        </div>
-      </div>
 
-      {/* Order Details Modal only for delivered orders */}
-      {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h2 className="text-xl font-semibold mb-4">Order Details</h2>
-            <p className="mb-4">
-              {/* Replace with your order detail content */}
-              Your order has been delivered. Here are the details...
-            </p>
-            <button
-              onClick={() => setShowModal(false)}
-              className="px-4 py-2 bg-red-500 text-white rounded"
-            >
-              Close
-            </button>
+        {/* View Map button */}
+        <button
+          onClick={currentState === "picked" ? handleViewMap : undefined}
+          disabled={currentState !== "picked"}
+          className={`px-10 py-3 rounded-3xl text-white font-semibold mt-6 transition-all duration-300
+            ${currentState === "picked" ? "bg-blue-500 hover:bg-blue-600 cursor-pointer" : "bg-gray-400 cursor-not-allowed"}`}
+        >
+          View Map
+        </button>
+
+        {/* Delivered modal */}
+        {currentState === "delivered" && showModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full">
+              <h2 className="text-xl font-semibold mb-4">Order Delivered</h2>
+              <p className="mb-4">Your order has been delivered successfully!</p>
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 bg-red-500 text-white rounded"
+              >
+                Close
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
