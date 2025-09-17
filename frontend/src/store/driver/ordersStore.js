@@ -20,7 +20,17 @@ const useDriverOrdersStore = create((set, get) => ({
       const data = await fetchDriverOrdersAPI(driverId);
       set({ driver: data.driver, orders: data.orders, loading: false });
     } catch (err) {
-      set({ error: err.message, loading: false });
+      // Handle first-time login / driver unavailable
+      if (err.response?.status === 404) {
+        set({
+          driver: { _id: driverId, email: "Unknown", status: "unavailable" },
+          orders: [],
+          loading: false,
+          error: "",
+        });
+      } else {
+        set({ error: err.message, loading: false });
+      }
     }
   },
 
