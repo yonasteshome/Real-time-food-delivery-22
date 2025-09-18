@@ -137,14 +137,14 @@ exports.login = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      // sameSite: "none",
+      sameSite: "none",
       path: "/",
     });
 
     res.cookie("refreshToken", refreshTokenValue, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      // sameSite: "none",
+      sameSite: "none",
       path: "/",
     });
 
@@ -204,12 +204,12 @@ exports.logout = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    // sameSite: "none",
+    sameSite: "none",
   });
   res.clearCookie("refreshToken", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    // sameSite: "none",
+    sameSite: "none",
   });
 };
 exports.forgotPassword = async (req, res) => {
