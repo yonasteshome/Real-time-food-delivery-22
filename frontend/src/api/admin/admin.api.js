@@ -1,5 +1,5 @@
 // src/api/adminRestaurants.js
-const API_BASE = "http://localhost:5000/api/delivery/admin/restaurants";
+const API_BASE = "https://real-time-food-delivery.onrender.com/api/delivery/admin/restaurants";
 
 export const fetchPendingRestaurantsAPI = async () => {
   const res = await fetch(`${API_BASE}/pending`, {

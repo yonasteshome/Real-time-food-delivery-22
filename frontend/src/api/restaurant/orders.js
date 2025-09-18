@@ -2,7 +2,7 @@
 export const fetchRestaurantOrders = async (restaurantId) => {
   try {
     const res = await fetch(
-      `http://localhost:5000/api/delivery/restaurants/${restaurantId}/orders`,
+      `https://real-time-food-delivery.onrender.com/api/delivery/restaurants/${restaurantId}/orders`,
       {
         method: "GET",
         credentials: "include", // 🔑 HttpOnly cookie usage

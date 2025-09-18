@@ -4,7 +4,7 @@ import axios from "axios";
 export const fetchDriverOrdersAPI = async (driverId) => {
   try {
     const res = await axios.get(
-      `http://localhost:5000/api/delivery/drivers/${driverId}/orders`,
+      `https://real-time-food-delivery.onrender.com/api/delivery/drivers/${driverId}/orders`,
       { withCredentials: true }
     );
     return res.data.data; // { driver, orders }
@@ -20,7 +20,7 @@ export const fetchDriverOrdersAPI = async (driverId) => {
 export const fetchDriverEarningsAPI = async (driverId) => {
   try {
     const res = await axios.get(
-      `http://localhost:5000/api/delivery/drivers/${driverId}/earnings`,
+      `https://real-time-food-delivery.onrender.com/api/delivery/drivers/${driverId}/earnings`,
       { withCredentials: true }
     );
     return res.data.data;
@@ -36,7 +36,7 @@ export const fetchDriverEarningsAPI = async (driverId) => {
 export const updateDriverStatusAPI = async (status) => {
   try {
     const res = await axios.patch(
-      `http://localhost:5000/api/delivery/drivers/status`,
+      `https://real-time-food-delivery.onrender.com/api/delivery/drivers/status`,
       { status },
       { withCredentials: true }
     );
@@ -53,7 +53,7 @@ export const updateDriverStatusAPI = async (status) => {
 export const updateOrderStatusAPI = async (orderId, status) => {
   try {
     await axios.post(
-      `http://localhost:5000/api/delivery/orders/${orderId}/status`,
+      `https://real-time-food-delivery.onrender.com/api/delivery/orders/${orderId}/status`,
       { status },
       { withCredentials: true }
     );

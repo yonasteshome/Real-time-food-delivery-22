@@ -1,5 +1,5 @@
 // src/api/menuApi.js
-const BASE_URL = "http://localhost:5000/api/delivery/restaurants";
+const BASE_URL = "https://real-time-food-delivery.onrender.com/api/delivery/restaurants";
 
 export const fetchMenuByRestaurantId = async (restaurantId) => {
   const response = await fetch(`${BASE_URL}/${restaurantId}`, {
