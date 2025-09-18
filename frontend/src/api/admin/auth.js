@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000/api/delivery/auth",
+  baseURL: "https://real-time-food-delivery.onrender.com/api/delivery/auth",
   withCredentials: true, // ✅ send HttpOnly cookies automatically
 });
 

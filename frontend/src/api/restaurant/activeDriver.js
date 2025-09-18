@@ -3,7 +3,7 @@ import axios from "axios";
 export const fetchActiveDrivers = async (restaurantId) => {
   try {
     const res = await axios.get(
-      `http://localhost:5000/api/delivery/restaurants/${restaurantId}/active-drivers`,
+      `https://real-time-food-delivery.onrender.com/api/delivery/restaurants/${restaurantId}/active-drivers`,
       { withCredentials: true }
     );
     return res.data.drivers || [];
