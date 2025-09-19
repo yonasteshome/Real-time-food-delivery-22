@@ -2,7 +2,7 @@
 export const fetchRestaurantOrders = async (restaurantId) => {
   try {
     const res = await fetch(
-      `https://real-time-food-delivery.onrender.com/api/delivery/restaurants/${restaurantId}/orders`,
+      `https://delivery-backend-jtub.onrender.com/api/delivery/restaurants/${restaurantId}/orders`,
       { method: "GET", credentials: "include" } // HttpOnly cookie
     );
     if (!res.ok) {
