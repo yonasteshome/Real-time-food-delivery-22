@@ -4,7 +4,7 @@ import axios from "axios";
 export const registerDriver = async (driverData) => {
   try {
     const res = await axios.post(
-      "https://real-time-food-delivery.onrender.com/api/delivery/drivers/register",
+      "https://delivery-backend-jtub.onrender.com/api/delivery/drivers/register",
       driverData,
       { withCredentials: true } // HttpOnly cookie
     );
