@@ -2,7 +2,7 @@
 
 export const verifyOTP = async ({ phone, otp }) => {
     try {
-      const res = await fetch("https://real-time-food-delivery.onrender.com/api/delivery/auth/verify-otp", {
+      const res = await fetch("https://delivery-backend-jtub.onrender.com/api/delivery/auth/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone, otp }),
