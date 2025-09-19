@@ -3,7 +3,7 @@ import axios from "axios";
 export const fetchDriverEarningsAPI = async (driverId) => {
   try {
     const res = await axios.get(
-      `https://real-time-food-delivery.onrender.com/api/delivery/drivers/${driverId}/earnings`,
+      `https://delivery-backend-jtub.onrender.com/api/delivery/drivers/${driverId}/earnings`,
       { withCredentials: true }
     );
     return res.data.data;
