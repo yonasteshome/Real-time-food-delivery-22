@@ -19,7 +19,7 @@ export const fetchRestaurantOrders = async (restaurantId) => {
 export const fetchRestaurantStats = async (restaurantId) => {
   try {
     const res = await fetch(
-      `http://localhost:5000/api/delivery/restaurants/${restaurantId}/stats`,
+      `https://delivery-backend-jtub.onrender.com/api/delivery/restaurants/${restaurantId}/stats`,
       { method: "GET", credentials: "include" } // HttpOnly cookie
     );
     if (!res.ok) {
