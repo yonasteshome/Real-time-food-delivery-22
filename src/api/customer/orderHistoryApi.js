@@ -1,5 +1,5 @@
 const API_URL =
-  process.env.REACT_APP_API_URL || "https://real-time-food-delivery.onrender.com/api/delivery";
+  process.env.REACT_APP_API_URL || "https://delivery-backend-jtub.onrender.com/api/delivery";
 
 export const getOrderHistory = async (page = 1, limit = 10) => {
   const response = await fetch(
