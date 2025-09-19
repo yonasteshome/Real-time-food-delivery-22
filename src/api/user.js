@@ -3,7 +3,7 @@ import axios from "axios";
 export const fetchUserInfoAPI = async () => {
   try {
     const res = await axios.get(
-      "https://real-time-food-delivery.onrender.com/api/delivery/users/info",
+      "https://delivery-backend-jtub.onrender.com/api/delivery/users/info",
       {
         withCredentials: true,
       }
